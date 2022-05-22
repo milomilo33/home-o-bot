@@ -1,13 +1,16 @@
 package com.robot.homeobot.dto;
 
 
+import javax.validation.constraints.Pattern;
+
 // DTO koji preuzima podatke iz HTML forme za registraciju
 public class UserRequest {
 
     private Long id;
 
     private String username;
-
+    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\\d)(?=.*?[#?!@$ %^&*-]).{8,}$",
+            message = "password must be minimum 8 characters, contain one number ,contain at least one upper case letter, and one special character")
     private String password;
 
     private String firstname;
