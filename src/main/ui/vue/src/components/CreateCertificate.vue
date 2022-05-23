@@ -1,12 +1,13 @@
 <template>
     <b-container>
-        <h1>Certificate Signing Request</h1>
+        <h1>Create certificate from CSR</h1>
         <b-form>
             <b-form-input id="commonName"
                         name="commonName"
                         placeholder="Common Name (unique)"
                         class="mb-2 mr-sm-2 mb-sm-0"
-                        v-model="commonName">
+                        v-model="commonName"
+                        disabled>
             </b-form-input>
             <br>
             <b-form-input id="organizationalUnit"
@@ -45,8 +46,30 @@
                         :options="countryOptions">
             </b-form-select>
             <br>
+
+            <label></label>
+            <label for="dd"> Valid from: </label>
+            <div>
+            <b-form-datepicker
+                v-model="dateFrom"
+                :min="minDate"
+                locale="en"
+                class="mb-2"
+                required
+            ></b-form-datepicker>
+            </div>
+            <label></label>
+            <label for="dd"> Valid until: </label>
+            <b-form-datepicker
+                v-model="dateTo"
+                :min="minDate"
+                locale="en"
+                class="mb-2"
+                required
+            ></b-form-datepicker>
+
             <br>
-            <b-button @click="onSubmit" class="mb-2 mr-sm-2 mb-sm-0">Create request</b-button>
+            <b-button @click="onSubmit" class="mb-2 mr-sm-2 mb-sm-0">Create certificate</b-button>
         </b-form>
 
         <b-modal ref="error-modal" hide-footer title="Error">
@@ -58,7 +81,7 @@
         
         <b-modal ref="success-modal" hide-footer title="Success">
             <div class="d-block text-center">
-                <p>Request successfully submitted.</p>
+                <p>Certificate successfully created.</p>
             </div>
             <b-button class="mt-3" variant="outline-success" block @click="hideSuccessModal">Close</b-button>
         </b-modal>
@@ -72,14 +95,17 @@
     export default {
         data() {
             return {
-                commonName: '',
-                organizationalUnit: '',
-                organization: '',
-                location: '',
-                state: '',
-                country: '',
+                commonName: this.csr.CN,
+                organizationalUnit: this.csr.OU,
+                organization: this.csr.O,
+                location: this.csr.L,
+                state: this.csr.ST,
+                country: this.csr.C,
                 errorMessage: '',
-                countryOptions: countryList
+                countryOptions: countryList,
+                minDate: new Date(),
+                dateFrom: new Date(),
+                dateTo: new Date(new Date().setFullYear(new Date().getFullYear() + 5))
             }
         },
         methods: {
@@ -91,11 +117,13 @@
                     L: this.location,
                     ST: this.state,
                     C: this.country,
+                    start: this.dateFrom,
+                    end: this.dateTo
                 };
 
-                this.axios.post(`/api/csr/create`, body/*, {
+                this.axios.post(`/api/certificates/create`, body/*, {
                         headers: {
-                            Authorization: "Bearer " + localStorage.getItem('token'),
+                            Authorization: "Bearer " + sessionStorage.getItem('token'),
                         },
                     }*/)
                 .then(() => {
@@ -122,6 +150,10 @@
             showSuccessModal() {
                 this.$refs['success-modal'].show()
             },
-        }
+        },
+
+        props: {
+            csr: Object
+        },
     }
 </script>

@@ -3,13 +3,20 @@
         <h1>All pending CSRs</h1>
         <br>
         <b-table striped hover :items="csrs" :fields="csrFields">
-            <template #cell(action)="row">
+            <template #cell(actions)="row">
                 <button class="btn btn-success" @click="generateCertificate(row)"
                     :ref="'genbtn' + row.index">Generate certificate</button>
-                <button class="btn btn-dark" @click="rejectCSR(row)"
+                <button class="btn btn-danger" @click="rejectCSR(row)"
                     :ref="'delbtn' + row.index">Reject</button>
             </template>
         </b-table>
+
+        <b-modal ref="success-modal" hide-footer title="Success">
+            <div class="d-block text-center">
+                <p>Request rejected & private key deleted.</p>
+            </div>
+            <b-button class="mt-3" variant="outline-success" block @click="hideSuccessModal">Close</b-button>
+        </b-modal>
     </div>
 </template>
 
@@ -64,6 +71,7 @@
                                     },
                                 }*/)
                                 .then(response => {
+                                    this.showSuccessModal();
                                     this.loadAllCSRs();
                                 })
                                 .catch(error => {
@@ -86,8 +94,16 @@
             },
 
             generateCertificate(row) {
-                console.log("open page for certificate creation");
-            }
+                this.$router.push({ name: "CreateCertificate", params: { csr: row.item } });
+            },
+
+            hideSuccessModal() {
+                this.$refs['success-modal'].hide()
+            },
+
+            showSuccessModal() {
+                this.$refs['success-modal'].show()
+            },
         },
 
         mounted() {

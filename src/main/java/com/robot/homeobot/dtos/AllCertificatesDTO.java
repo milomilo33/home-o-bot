@@ -2,7 +2,7 @@ package com.robot.homeobot.dtos;
 
 import java.time.LocalDateTime;
 
-public class NewCertificateDTO {
+public class AllCertificatesDTO {
     public String CN;
     public String OU;
     public String O;
@@ -11,18 +11,20 @@ public class NewCertificateDTO {
     public String C;
     public LocalDateTime start;
     public LocalDateTime end;
+    public String status;
 
-    public NewCertificateDTO() {}
+    public AllCertificatesDTO() {}
 
-    public NewCertificateDTO(String CN, String OU, String o, String l, String st, String c, LocalDateTime start, LocalDateTime end) {
+    public AllCertificatesDTO(String CN, String OU, String o, String l, String ST, String c, LocalDateTime start, LocalDateTime end, String status) {
         this.CN = CN;
         this.OU = OU;
         O = o;
         L = l;
-        ST = st;
+        this.ST = ST;
         C = c;
         this.start = start;
         this.end = end;
+        this.status = status;
     }
 
     public String getCN() {
@@ -61,8 +63,8 @@ public class NewCertificateDTO {
         return ST;
     }
 
-    public void setST(String st) {
-        ST = st;
+    public void setST(String ST) {
+        this.ST = ST;
     }
 
     public String getC() {
@@ -87,5 +89,13 @@ public class NewCertificateDTO {
 
     public void setEnd(LocalDateTime end) {
         this.end = end;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
