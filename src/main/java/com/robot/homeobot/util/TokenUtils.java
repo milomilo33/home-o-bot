@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 
 import com.robot.homeobot.model.User;
+import com.robot.homeobot.services.user.UserService;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -59,6 +61,8 @@ public class TokenUtils {
 
     private final SecureRandom secureRandom = new SecureRandom();
 
+    @Autowired
+    private UserService userService;
 
     // ============= Funkcije za generisanje JWT tokena =============
 
@@ -76,6 +80,7 @@ public class TokenUtils {
         return Jwts.builder()
                 .setIssuer(APP_NAME)
                 .setSubject(username)
+                .claim("role", userService.findByUsername(username).getRoles().get(0).getName())
                 .setAudience(generateAudience())
                 .setIssuedAt(new Date())
                 .setExpiration(generateExpirationDate())

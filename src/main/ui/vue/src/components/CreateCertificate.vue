@@ -121,11 +121,11 @@
                     end: new Date(this.dateTo).toISOString()
                 };
 
-                this.axios.post(`/api/certificates/create`, body/*, {
+                this.axios.post(`/api/certificates/create`, body, {
                         headers: {
                             Authorization: "Bearer " + sessionStorage.getItem('token'),
                         },
-                    }*/)
+                    })
                 .then(() => {
                     this.showSuccessModal();
                 })

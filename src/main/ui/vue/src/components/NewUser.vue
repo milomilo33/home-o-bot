@@ -1,6 +1,6 @@
 <template>
     <b-container>
-        <h1>Certificate Signing Request</h1>
+        <h1>User creation</h1>
         <b-form>
             <b-form-input id="username"
                         name="username"
@@ -46,7 +46,7 @@
             </b-form-select>
             <br>
             <br>
-            <b-button @click="onSubmit" class="mb-2 mr-sm-2 mb-sm-0">Create request</b-button>
+            <b-button @click="onSubmit" class="mb-2 mr-sm-2 mb-sm-0">Create user</b-button>
         </b-form>
 
         <b-modal ref="error-modal" hide-footer title="Error">
@@ -58,7 +58,7 @@
         
         <b-modal ref="success-modal" hide-footer title="Success">
             <div class="d-block text-center">
-                <p>Request successfully submitted.</p>
+                <p>User successfully created.</p>
             </div>
             <b-button class="mt-3" variant="outline-success" block @click="hideSuccessModal">Close</b-button>
         </b-modal>
@@ -89,7 +89,7 @@
                     firstname: this.firstname,
                     lastname: this.lastname,
                     email: this.email,
-                    role: this.role,
+                    roles: [this.role],
                 };
 
                 this.errorMessage = ""
@@ -120,7 +120,7 @@
                     return
                 }
 
-                this.axios.post(`http://localhost:8080/api/auth/signup`, body, {
+                this.axios.post(`/api/auth/signup`, body, {
                         headers: {
                             Authorization: "Bearer " + sessionStorage.getItem('token'),
                         },

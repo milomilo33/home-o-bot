@@ -47,7 +47,6 @@ public class User implements UserDetails {
     private String lastName;
 
     @Column(name = "email")
-    @Pattern(regexp = "/^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$/")
     private String email;
 
     @Column(name = "enabled")
@@ -85,6 +84,7 @@ public class User implements UserDetails {
         for (Role role : this.roles) {
             permissions.addAll(role.getPrivileges());
         }
+        permissions.addAll(this.roles);
         return permissions;
     }
 

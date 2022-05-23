@@ -30,6 +30,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 //Kontroler zaduzen za autentifikaciju korisnika
@@ -91,7 +92,7 @@ public class AuthenticationController {
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"password must be minimum 8 characters, contain one number ,contain at least one upper case letter, and one special character");
         }
 
-        if(!userRequest.getEmail().matches("/^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$/")){
+        if(!IsProperEmail(userRequest.getEmail())){
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid email format");
         }
         User existUser = this.userService.findByUsername(userRequest.getUsername());
@@ -103,6 +104,13 @@ public class AuthenticationController {
         User user = this.userService.save(userRequest);
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    public boolean IsProperEmail(String value) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*";
+        if (Pattern.compile(ePattern).matcher(value).matches())
+            return true;
+        return false;
     }
 
     @PutMapping(value = "/destroy", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

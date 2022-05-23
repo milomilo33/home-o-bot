@@ -15,10 +15,9 @@ import AllCertificates from '../components/AllCertificates'
 
 Vue.use(VueRouter)
 
-// const Role = {
-// 	Admin: 'ROLE_ADMIN',
-// 	...
-// }
+const Role = {
+	Admin: 'ROLE_ADMIN',
+}
 
 const routes = [
 	{
@@ -52,34 +51,47 @@ const routes = [
 				path: "CreateCSR",
 				name: "CreateCSRAdmin",
 				component: CreateCSR,
+				meta: {
+					roles: [Role.Admin]
+				},
 			},
 			{
 				path: "AllCSRs",
 				name: "AllCSRs",
 				component: AllCSRs,
+				meta: {
+					roles: [Role.Admin]
+				},
 			},
 			{
-
 				path: "NewUser",
 				name: "NewUser",
 				component: NewUser,
+				meta: {
+					roles: [Role.Admin]
+				},
 			},
-
+			{
 				path: "CreateCertificate",
 				name: "CreateCertificate",
 				component: CreateCertificate,
-				props: true
+				props: true,
+				meta: {
+					roles: [Role.Admin]
+				},
 			},
 			{
 				path: "AllCertificates",
 				name: "AllCertificates",
 				component: AllCertificates,
+				meta: {
+					roles: [Role.Admin]
+				},
 			},
-
 		],
-		// meta: {
-		// 	roles: [Role.Admin]
-		// },
+		meta: {
+			roles: [Role.Admin]
+		},
 	},
 	{
 		path: '*',
@@ -95,14 +107,13 @@ const router = new VueRouter({
 })
 
 export default router
-// router.beforeEach((to, from, next) => {
-// 	const { roles } = to.meta;
-// 	if (roles) {
-// 		// treba koristiti session storage
-// 		const userRole = JSON.parse(atob(localStorage.getItem('token').split('.')[1])).role;
-// 		if(roles.length && !roles.includes(userRole)){
-// 			return next({path: 'Login'});
-// 		}
-// 	}
-// 	next();
-// });
+router.beforeEach((to, from, next) => {
+	const { roles } = to.meta;
+	if (roles) {
+		const userRole = JSON.parse(atob(sessionStorage.getItem('token').split('.')[1])).role;
+		if(roles.length && !roles.includes(userRole)){
+			return next({path: 'Login'});
+		}
+	}
+	next();
+});

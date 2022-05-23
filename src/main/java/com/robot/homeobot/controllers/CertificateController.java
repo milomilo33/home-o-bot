@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,7 +23,7 @@ public class CertificateController {
     private CertificateService certificateService;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AllCertificatesDTO>> getAllCertificates() {
         List<AllCertificatesDTO> certificates;
         try {
@@ -35,7 +36,7 @@ public class CertificateController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    //    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createCertificate(@RequestBody NewCertificateDTO newCertificateDTO) {
         try {
             certificateService.createCertificate(newCertificateDTO, newCertificateDTO.getCN());
@@ -47,7 +48,7 @@ public class CertificateController {
     }
 
     @GetMapping(value = "/revoke")
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> revokeCertificate(@RequestParam("CN") String CN, @RequestParam("reason") String reason) {
         try {
             certificateService.revokeCertificate(CN, reason);
@@ -59,7 +60,7 @@ public class CertificateController {
     }
 
     @GetMapping(value = "/unrevoke")
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> unrevokeCertificate(@RequestParam("CN") String CN) {
         try {
             certificateService.unrevokeCertificateOnHold(CN);

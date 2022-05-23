@@ -93,11 +93,7 @@
                     C: this.country,
                 };
 
-                this.axios.post(`/api/csr/create`, body/*, {
-                        headers: {
-                            Authorization: "Bearer " + localStorage.getItem('token'),
-                        },
-                    }*/)
+                this.axios.post(`/api/csr/create`, body)
                 .then(() => {
                     this.showSuccessModal();
                 })

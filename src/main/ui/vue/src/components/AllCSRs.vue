@@ -65,11 +65,11 @@
         methods: {
             rejectCSR(row) {
                 let CN = row.item.CN;
-                this.axios.get(`/api/csr/reject/${CN}`, /*{
+                this.axios.get(`/api/csr/reject/${CN}`, {
                                     headers: {
                                         Authorization: "Bearer " + sessionStorage.getItem("token"),
                                     },
-                                }*/)
+                                })
                                 .then(response => {
                                     this.showSuccessModal();
                                     this.loadAllCSRs();
@@ -80,11 +80,11 @@
             },
 
             loadAllCSRs() {
-                this.axios.get(`/api/csr`, /*{
+                this.axios.get(`/api/csr`, {
                     headers: {
                         Authorization: "Bearer " + sessionStorage.getItem("token"),
                     },
-                }*/)
+                })
                 .then(response => {
                     this.csrs = response.data;
                 })

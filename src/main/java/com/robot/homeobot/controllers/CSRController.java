@@ -22,7 +22,7 @@ public class CSRController {
     private CSRService csrService;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-//    @PreAuthorize("hasAnyRole('')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CSRDTO>> getAllCSRs() {
         List<CSRDTO> CSRs;
         try {
@@ -47,7 +47,7 @@ public class CSRController {
     }
 
     @GetMapping(value = "/reject/{CN}")
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> rejectCSR(@PathVariable String CN) {
         try {
             csrService.deleteCSRAndPrivateKey(CN);

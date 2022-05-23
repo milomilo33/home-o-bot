@@ -8,6 +8,7 @@
         <b-nav-item href="/AdminPage/CreateCSR">Create request</b-nav-item>
         <b-nav-item href="/AdminPage/AllCSRs">All CSRs</b-nav-item>
         <b-nav-item href="/AdminPage/AllCertificates">All certificates</b-nav-item>
+        <b-nav-item href="/AdminPage/NewUser">Create user</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->

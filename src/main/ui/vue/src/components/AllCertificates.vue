@@ -121,11 +121,11 @@
 
             unrevokeCertificate(row) {
                 let CN = row.item.CN;
-                this.axios.get(`/api/certificates/unrevoke?CN=${CN}`, /*{
+                this.axios.get(`/api/certificates/unrevoke?CN=${CN}`, {
                                     headers: {
                                         Authorization: "Bearer " + sessionStorage.getItem("token"),
                                     },
-                                }*/)
+                                })
                                 .then(response => {
                                     this.showSuccessModal();
                                     this.loadAllCertificates();
@@ -136,11 +136,11 @@
             },
 
             loadAllCertificates() {
-                this.axios.get(`/api/certificates`, /*{
+                this.axios.get(`/api/certificates`, {
                     headers: {
                         Authorization: "Bearer " + sessionStorage.getItem("token"),
                     },
-                }*/)
+                })
                 .then(response => {
                     this.certificates = response.data;
                     
@@ -182,11 +182,11 @@
                 }
 
                 let CN = this.selectedRow.item.CN;
-                this.axios.get(`/api/certificates/revoke?CN=${CN}&reason=${encodeURIComponent(this.reasonInput)}`, /*{
+                this.axios.get(`/api/certificates/revoke?CN=${CN}&reason=${encodeURIComponent(this.reasonInput)}`, {
                     headers: {
                         Authorization: "Bearer " + sessionStorage.getItem("token"),
                     },
-                }*/)
+                })
                 .then(response => {
                     this.showSuccessModal();
                     this.loadAllCertificates();
