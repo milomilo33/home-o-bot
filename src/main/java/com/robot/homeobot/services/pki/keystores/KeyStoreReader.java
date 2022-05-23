@@ -74,9 +74,10 @@ public class KeyStoreReader {
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
             ks.load(in, keyStorePass.toCharArray());
 
-            if (ks.isKeyEntry(alias)) {
-                return ks.getCertificate(alias);
-            }
+//            if (ks.isKeyEntry(alias)) {
+//                return ks.getCertificate(alias);
+//            }
+            return ks.getCertificate(alias);
         } catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException |
                 CertificateException | IOException e) {
             e.printStackTrace();
