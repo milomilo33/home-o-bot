@@ -59,6 +59,9 @@ public class UserServiceImpl implements UserService {
         for(String role : userRequest.getRoles()){
             roles.addAll(roleService.findByName(role));
         }
+        if (roles.size() == 0) {
+            roles.addAll(roleService.findByName("ROLE_USER"));
+        }
         u.setRoles(roles);
 
         return this.userRepository.save(u);
