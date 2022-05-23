@@ -1,5 +1,6 @@
 package com.robot.homeobot.services.user;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.robot.homeobot.dto.UserRequest;
@@ -42,6 +43,8 @@ public class UserServiceImpl implements UserService {
         User u = new User();
         u.setUsername(userRequest.getUsername());
 
+
+
         // pre nego sto postavimo lozinku u atribut hesiramo je kako bi se u bazi nalazila hesirana lozinka
         // treba voditi racuna da se koristi isi password encoder bean koji je postavljen u AUthenticationManager-u kako bi koristili isti algoritam
         u.setPassword(passwordEncoder.encode(userRequest.getPassword()));
@@ -52,10 +55,37 @@ public class UserServiceImpl implements UserService {
         u.setEmail(userRequest.getEmail());
 
         // u primeru se registruju samo obicni korisnici i u skladu sa tim im se i dodeljuje samo rola USER
-        List<Role> roles = roleService.findByName("ROLE_USER");
+        List<Role> roles = new ArrayList<>();
+        for(String role : userRequest.getRoles()){
+            roles.addAll(roleService.findByName(role));
+        }
         u.setRoles(roles);
 
         return this.userRepository.save(u);
+    }
+
+    @Override
+    public User updateUser(Long userId, UserRequest userRequest) {
+        User u  = this.userRepository.findById(userId).orElseThrow();
+        if (userRequest.getRoles().size() > 0) {
+            List<Role> roles = new ArrayList<>();
+            for (String role : userRequest.getRoles()) {
+                roles.addAll(roleService.findByName(role));
+            }
+            u.setRoles(roles);
+        }
+        return u;
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        User u = this.userRepository.findById(userId).orElseThrow();
+        userRepository.delete(u);
+    }
+
+    @Override
+    public List<Role> getAllRoles() {
+        return roleService.getAllRoles();
     }
 
 }

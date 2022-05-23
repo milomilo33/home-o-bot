@@ -101,7 +101,7 @@ public class AuthenticationController {
     }
 
     @PutMapping(value = "/destroy", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public JwtBlacklist logout(@RequestBody Map<String,String> json, HttpSession httpSession) throws UnsupportedEncodingException {
+    public JwtBlacklist logout(@RequestBody Map<String,String> json)  {
 
         String token = json.get("token");
 

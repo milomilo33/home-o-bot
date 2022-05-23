@@ -31,4 +31,10 @@ public class RealEstateController {
         return this.realEstateService.findAll();
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('READ_REAL_ESTATE')")
+    public RealEstate loadById(@PathVariable Long id) {
+        return this.realEstateService.findById(id);
+    }
+
 }

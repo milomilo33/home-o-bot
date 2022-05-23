@@ -1,8 +1,18 @@
 package com.robot.homeobot.dto;
 
 
-import javax.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.validation.constraints.Pattern;
+import java.util.List;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 // DTO koji preuzima podatke iz HTML forme za registraciju
 public class UserRequest {
 
@@ -18,6 +28,8 @@ public class UserRequest {
     private String lastname;
 
     private String email;
+
+    private List<String> roles;
 
     public String getUsername() {
         return username;

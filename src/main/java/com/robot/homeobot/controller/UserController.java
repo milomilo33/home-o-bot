@@ -5,18 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.robot.homeobot.dto.UserRequest;
+import com.robot.homeobot.model.Role;
 import com.robot.homeobot.model.User;
 import com.robot.homeobot.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 // Primer kontrolera cijim metodama mogu pristupiti samo autorizovani korisnici
@@ -50,4 +49,25 @@ public class UserController {
         return this.userService.findByUsername(user.getName());
     }
 
+    @PatchMapping("/{userId}")
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
+    public User user(@RequestBody UserRequest userRequest, @PathVariable Long userId){
+        return this.userService.updateUser(userId, userRequest);
+    }
+
+    @DeleteMapping("/{userId}")
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+        try {
+            this.userService.deleteUser(userId);
+            return ResponseEntity.ok().body("User deleted");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/user-roles")
+    public List<Role> getAllRoles() {
+        return this.userService.getAllRoles();
+    }
 }
