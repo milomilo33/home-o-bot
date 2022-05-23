@@ -12,6 +12,7 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Enumeration;
 
 @Service
 public class KeyStoreReader {
@@ -100,6 +101,23 @@ public class KeyStoreReader {
             }
         } catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException |
                 CertificateException | IOException | UnrecoverableKeyException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Enumeration<String> getAllAliases(String keyStoreFile, String keyStorePass) {
+        try {
+            // kreiramo instancu KeyStore
+            KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+
+            // ucitavamo podatke
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
+            ks.load(in, keyStorePass.toCharArray());
+
+            return ks.aliases();
+        } catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException |
+                CertificateException | IOException e) {
             e.printStackTrace();
         }
         return null;

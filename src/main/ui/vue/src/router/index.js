@@ -6,7 +6,12 @@ import Login from '../views/Login'
 import Logout from '../views/Logout'
 import AdminPage from '../views/AdminPage'
 import AllCSRs from '../components/AllCSRs'
+
 import NewUser from '../components/NewUser'
+
+import CreateCertificate from '../components/CreateCertificate'
+import AllCertificates from '../components/AllCertificates'
+
 
 Vue.use(VueRouter)
 
@@ -54,10 +59,23 @@ const routes = [
 				component: AllCSRs,
 			},
 			{
+
 				path: "NewUser",
 				name: "NewUser",
 				component: NewUser,
-			}
+			},
+
+				path: "CreateCertificate",
+				name: "CreateCertificate",
+				component: CreateCertificate,
+				props: true
+			},
+			{
+				path: "AllCertificates",
+				name: "AllCertificates",
+				component: AllCertificates,
+			},
+
 		],
 		// meta: {
 		// 	roles: [Role.Admin]

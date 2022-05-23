@@ -5,8 +5,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
+import com.robot.homeobot.dtos.CSRDTO;
 import com.robot.homeobot.services.pki.data.SubjectData;
+import com.robot.homeobot.services.pki.keystores.KeyStoreReader;
+import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMParser;
@@ -17,6 +23,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.x500.X500Principal;
@@ -33,6 +40,9 @@ public class CSRService {
         Security.addProvider(new BouncyCastleProvider());
     }
 
+    @Autowired
+    private KeyStoreReader keyStoreReader;
+
     /**
      *
      * @param CN
@@ -44,7 +54,7 @@ public class CSRService {
      *            Organization NAME
      * @param L
      *            Location
-     * @param S
+     * @param ST
      *            State
      * @param C
      *            Country
@@ -52,12 +62,16 @@ public class CSRService {
      */
     public void generateCSR(String CN, String OU, String O,
                                          String L, String ST, String C) throws Exception {
+        if (this.commonNameExists(CN)) {
+            throw new Exception("Common name is not unique!");
+        }
+
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", "BC");
         keyPairGenerator.initialize(2048);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
         PKCS10CertificationRequestBuilder p10Builder = new JcaPKCS10CertificationRequestBuilder(
-                new X500Principal(String.format("CN=%s, OU=%s, O=%s, L=%s, S=%s, C=%s", CN, OU, O, L, ST, C)), keyPair.getPublic());
+                new X500Principal(String.format("CN=%s, OU=%s, O=%s, L=%s, ST=%s, C=%s", CN, OU, O, L, ST, C)), keyPair.getPublic());
 
         JcaContentSignerBuilder csBuilder = new JcaContentSignerBuilder("SHA256withRSA");
         ContentSigner signer = csBuilder.build(keyPair.getPrivate());
@@ -100,5 +114,62 @@ public class CSRService {
             return new File(String.format("store/private_keys_to_distribute/%s.key", filename)).delete();
         }
         else return false;
+    }
+
+    public List<CSRDTO> getAllCSRs() throws Exception {
+        List<CSRDTO> CSRs = new ArrayList<>();
+
+        File dir = new File("store/csr");
+        for (File file : dir.listFiles()) {
+            if (file.getName().endsWith((".csr"))) {
+                String filename = file.getName().substring(0, file.getName().length() - 4);
+                SubjectData subjectDataFromCSR = this.getSubjectDataFromCSR(filename);
+                String CN = subjectDataFromCSR.getX500name().getRDNs(BCStyle.CN)[0].getFirst().getValue().toString();
+                String OU = subjectDataFromCSR.getX500name().getRDNs(BCStyle.OU)[0].getFirst().getValue().toString();
+                String O = subjectDataFromCSR.getX500name().getRDNs(BCStyle.O)[0].getFirst().getValue().toString();
+                String L = subjectDataFromCSR.getX500name().getRDNs(BCStyle.L)[0].getFirst().getValue().toString();
+                String ST = subjectDataFromCSR.getX500name().getRDNs(BCStyle.ST)[0].getFirst().getValue().toString();
+                String C = subjectDataFromCSR.getX500name().getRDNs(BCStyle.C)[0].getFirst().getValue().toString();
+
+                CSRDTO csr = new CSRDTO(CN, OU, O, L, ST, C);
+                CSRs.add(csr);
+            }
+        }
+
+        return CSRs;
+    }
+
+    public boolean commonNameExists(String CN) throws Exception {
+        if (commonNameExistsInCSRFiles(CN)) {
+            return true;
+        }
+
+        // add: if certificate invalid, common name does not exist
+        Enumeration<String> aliases = keyStoreReader.getAllAliases("store/keystore.jks", "password");
+        while (aliases.hasMoreElements()) {
+            String alias = aliases.nextElement();
+            if (CN.equals(alias)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean commonNameExistsInCSRFiles(String CN) throws Exception {
+        File dir = new File("store/csr");
+        for (File file : dir.listFiles()) {
+            if (file.getName().endsWith((".csr"))) {
+                String filename = file.getName().substring(0, file.getName().length() - 4);
+                SubjectData subjectDataFromCSR = this.getSubjectDataFromCSR(filename);
+                String existingCN = subjectDataFromCSR.getX500name().getRDNs(BCStyle.CN)[0].getFirst().getValue().toString();
+
+                if (CN.equals(existingCN)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
