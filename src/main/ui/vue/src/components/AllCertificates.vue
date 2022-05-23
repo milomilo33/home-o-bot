@@ -32,11 +32,12 @@
             label-for="reason-input"
             invalid-feedback="Reason is required"
             >
-            <b-form-input
+            <b-form-select
                 id="reason-input"
                 v-model="reasonInput"
+                :options="reasonOptions"
                 required
-            ></b-form-input>
+            ></b-form-select>
             </b-form-group>
         </form>
         </b-modal>
@@ -47,6 +48,16 @@
     export default {
         data() {
             return {
+                reasonOptions: ["unspecified",
+                                "keyCompromise",
+                                "cACompromise",
+                                "affiliationChanged",
+                                "superseded",
+                                "cessationOfOperation",
+                                "certificateHold",
+                                "removeFromCRL",
+                                "privilegeWithdrawn",
+                                "aACompromise"],
                 reasonInput: '',
                 selectedRow: {},
                 certificates: [],
@@ -135,8 +146,11 @@
                     
                     // date conversion
                     this.certificates.forEach((obj) => {
-                        obj["start"] = new Date(obj["start"]).toLocaleDateString();
-                        obj["end"] = new Date(obj["end"]).toLocaleDateString();
+                        console.log(obj["start"]);
+                        obj["start"][1]--;
+                        obj["end"][1]--;
+                        obj["start"] = new Date(...obj["start"]).toLocaleDateString();
+                        obj["end"] = new Date(...obj["end"]).toLocaleDateString();
                     });
                 })
                 .catch(error => {

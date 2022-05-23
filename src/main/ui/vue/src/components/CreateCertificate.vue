@@ -117,8 +117,8 @@
                     L: this.location,
                     ST: this.state,
                     C: this.country,
-                    start: this.dateFrom,
-                    end: this.dateTo
+                    start: new Date(this.dateFrom).toISOString(),
+                    end: new Date(this.dateTo).toISOString()
                 };
 
                 this.axios.post(`/api/certificates/create`, body/*, {
