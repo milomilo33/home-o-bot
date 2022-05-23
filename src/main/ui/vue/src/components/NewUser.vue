@@ -120,7 +120,7 @@
                     return
                 }
 
-                this.axios.post(`http://localhost:8443/api/auth/signup`, body, {
+                this.axios.post(`http://localhost:8080/api/auth/signup`, body, {
                         headers: {
                             Authorization: "Bearer " + sessionStorage.getItem('token'),
                         },

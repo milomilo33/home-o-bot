@@ -50,7 +50,7 @@ export default {
         return;
       }
       this.axios
-        .post("http://localhost:8443/api/auth/login", {
+        .post("http://localhost:8080/api/auth/login", {
           username: this.username,
           password: this.password,
         }, { withCredentials: true })
