@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.robot.homeobot.services.user.CustomUserDetailsService;
 import com.robot.homeobot.util.TokenUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,11 +27,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private TokenUtils tokenUtils;
 
-    private UserDetailsService userDetailsService;
+    private CustomUserDetailsService userDetailsService;
 
     protected final Log LOGGER = LogFactory.getLog(getClass());
 
-    public TokenAuthenticationFilter(TokenUtils tokenHelper, UserDetailsService userDetailsService) {
+    public TokenAuthenticationFilter(TokenUtils tokenHelper, CustomUserDetailsService userDetailsService) {
         this.tokenUtils = tokenHelper;
         this.userDetailsService = userDetailsService;
     }
@@ -46,6 +47,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String authToken = tokenUtils.getToken(request);
         String fingerprint = tokenUtils.getFingerprintFromCookie(request);
 
+        String xfHeader = request.getHeader("X-Forwarded-For");
+        String ip;
+        if (xfHeader == null){
+            ip = request.getRemoteAddr();
+        }
+        else ip = xfHeader.split(",")[0];
+
         try {
 
             if (authToken != null) {
@@ -56,7 +64,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 if (username != null) {
 
                     // 3. Preuzimanje korisnika na osnovu username-a
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    UserDetails userDetails = userDetailsService.loadUserByUsernameAndCheckIp(username, ip);
 
                     // 4. Provera da li je prosledjeni token validan
                     if (tokenUtils.validateToken(authToken, userDetails, fingerprint)) {

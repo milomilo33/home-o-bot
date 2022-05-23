@@ -1,13 +1,16 @@
 package com.robot.homeobot.controller;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import com.robot.homeobot.dto.JwtAuthenticationRequest;
 import com.robot.homeobot.dto.UserRequest;
 import com.robot.homeobot.dto.UserTokenState;
 import com.robot.homeobot.exception.ResourceConflictException;
+import com.robot.homeobot.model.JwtBlacklist;
 import com.robot.homeobot.model.User;
+import com.robot.homeobot.repository.JwtBlacklistRepository;
 import com.robot.homeobot.services.user.UserService;
 import com.robot.homeobot.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +22,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 
 //Kontroler zaduzen za autentifikaciju korisnika
 @RestController
+@Validated
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
@@ -39,6 +45,9 @@ public class AuthenticationController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtBlacklistRepository jwtBlacklistRepository;
 
     // Prvi endpoint koji pogadja korisnik kada se loguje.
     // Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.
@@ -74,7 +83,11 @@ public class AuthenticationController {
 
     // Endpoint za registraciju novog korisnika
     @PostMapping("/signup")
-    public ResponseEntity<User> addUser(@RequestBody @Valid UserRequest userRequest, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<User> addUser(@RequestBody UserRequest userRequest, UriComponentsBuilder ucBuilder) {
+
+        if(!userRequest.getPassword().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\\d)(?=.*?[#?!@$ %^&*-]).{8,}$")){
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"password must be minimum 8 characters, contain one number ,contain at least one upper case letter, and one special character");
+        }
 
         User existUser = this.userService.findByUsername(userRequest.getUsername());
 
@@ -85,5 +98,17 @@ public class AuthenticationController {
         User user = this.userService.save(userRequest);
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/destroy", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public JwtBlacklist logout(@RequestBody Map<String,String> json, HttpSession httpSession) throws UnsupportedEncodingException {
+
+        String token = json.get("token");
+
+        JwtBlacklist jwtBlacklist = new JwtBlacklist();
+        jwtBlacklist.setToken(token);
+        jwtBlacklistRepository.save(jwtBlacklist);
+
+        return jwtBlacklistRepository.save(jwtBlacklist);
     }
 }
