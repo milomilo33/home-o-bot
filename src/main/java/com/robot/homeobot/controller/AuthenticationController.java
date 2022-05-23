@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,7 +35,7 @@ import java.util.Map;
 //Kontroler zaduzen za autentifikaciju korisnika
 @RestController
 @Validated
-@RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
     @Autowired
@@ -83,12 +84,16 @@ public class AuthenticationController {
 
     // Endpoint za registraciju novog korisnika
     @PostMapping("/signup")
+    @PreAuthorize("hasAuthority('CREATE_USER')")
     public ResponseEntity<User> addUser(@RequestBody UserRequest userRequest, UriComponentsBuilder ucBuilder) {
 
         if(!userRequest.getPassword().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\\d)(?=.*?[#?!@$ %^&*-]).{8,}$")){
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"password must be minimum 8 characters, contain one number ,contain at least one upper case letter, and one special character");
         }
 
+        if(!userRequest.getEmail().matches("/^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$/")){
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid email format");
+        }
         User existUser = this.userService.findByUsername(userRequest.getUsername());
 
         if (existUser != null) {

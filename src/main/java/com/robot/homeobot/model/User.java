@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,6 +47,7 @@ public class User implements UserDetails {
     private String lastName;
 
     @Column(name = "email")
+    @Pattern(regexp = "/^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$/")
     private String email;
 
     @Column(name = "enabled")

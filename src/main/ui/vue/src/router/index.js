@@ -6,6 +6,7 @@ import Login from '../views/Login'
 import Logout from '../views/Logout'
 import AdminPage from '../views/AdminPage'
 import AllCSRs from '../components/AllCSRs'
+import NewUser from '../components/NewUser'
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,11 @@ const routes = [
 				path: "AllCSRs",
 				name: "AllCSRs",
 				component: AllCSRs,
+			},
+			{
+				path: "NewUser",
+				name: "NewUser",
+				component: NewUser,
 			}
 		],
 		// meta: {
