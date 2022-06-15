@@ -107,6 +107,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .xssProtection()
                 .and()
                 .contentSecurityPolicy("script-src 'self'");
+        http
+                .requiresChannel(channel ->
+                        channel.anyRequest().requiresSecure());
     }
 
     // Definisanje konfiguracije koja utice na generalnu bezbednost aplikacije

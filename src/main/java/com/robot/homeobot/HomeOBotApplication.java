@@ -21,6 +21,8 @@ public class HomeOBotApplication {
 	}
 
 
+
+
 	@Bean
 	public OpenAPI customOpenAPI() {
 		final String securitySchemeName = "bearerAuth";
