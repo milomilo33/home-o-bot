@@ -23,6 +23,14 @@ public class DeviceController {
     @Autowired
     private DeviceService deviceService;
 
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Device>> getAllDevices() {
+        List<Device> allDevices = deviceService.findAll();
+
+        return new ResponseEntity<>(allDevices, HttpStatus.OK);
+    }
+
     @PostMapping("/update-config")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Device>> updateAllDevicesConfig(@RequestBody List<DeviceConfigDTO> dtos) {

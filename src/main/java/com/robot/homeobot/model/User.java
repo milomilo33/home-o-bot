@@ -6,6 +6,8 @@ import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -44,9 +46,11 @@ public class User implements UserDetails {
     private boolean enabled;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     private Set<RealEstate> ownedRealEstate;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     private Set<RealEstate> rentedRealEstate;
 
     public Set<RealEstate> getOwnedRealEstate() {

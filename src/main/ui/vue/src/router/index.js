@@ -11,6 +11,7 @@ import NewUser from '../components/NewUser'
 
 import CreateCertificate from '../components/CreateCertificate'
 import AllCertificates from '../components/AllCertificates'
+import ManageOwners from '../components/ManageOwners'
 
 
 Vue.use(VueRouter)
@@ -84,6 +85,14 @@ const routes = [
 				path: "AllCertificates",
 				name: "AllCertificates",
 				component: AllCertificates,
+				meta: {
+					roles: [Role.Admin]
+				},
+			},
+			{
+				path: "ManageOwners",
+				name: "ManageOwners",
+				component: ManageOwners,
 				meta: {
 					roles: [Role.Admin]
 				},

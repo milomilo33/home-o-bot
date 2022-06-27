@@ -1,5 +1,8 @@
 package com.robot.homeobot.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
@@ -21,6 +24,7 @@ public class Device {
     private RealEstate realEstate;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<String> messages;
 
     public Device() {}
