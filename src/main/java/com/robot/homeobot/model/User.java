@@ -43,10 +43,10 @@ public class User implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private Set<RealEstate> ownedRealEstate;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<RealEstate> rentedRealEstate;
 
     public Set<RealEstate> getOwnedRealEstate() {

@@ -20,4 +20,6 @@ public interface UserService {
     void deleteUser(Long userId);
 
     List<Role> getAllRoles();
+
+
 }

@@ -20,7 +20,7 @@ public class Device {
     @ManyToOne(fetch = FetchType.EAGER)
     private RealEstate realEstate;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> messages;
 
     public Device() {}

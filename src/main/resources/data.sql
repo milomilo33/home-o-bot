@@ -8,7 +8,7 @@ INSERT INTO USERS (username, password, first_name, last_name, email, enabled, la
 INSERT INTO ROLE (name) VALUES ('ROLE_ADMIN');
 INSERT INTO ROLE (name) VALUES ('ROLE_OWNER');
 INSERT INTO ROLE (name) VALUES ('ROLE_RENTER');
-INSERT INTO ROLE (name) VALUES ('ROLE_USER');
+-- INSERT INTO ROLE (name) VALUES ('ROLE_USER');
 
 INSERT INTO USER_ROLE (user_id, role_id) VALUES (1, 1); -- user-u dodeljujemo rolu USER
 INSERT INTO USER_ROLE (user_id, role_id) VALUES (2, 2); -- user-u dodeljujemo rolu ADMIN
