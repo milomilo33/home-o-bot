@@ -3,16 +3,7 @@ package com.robot.homeobot.model;
 import java.sql.Timestamp;
 import java.util.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -51,6 +42,28 @@ public class User implements UserDetails {
 
     @Column(name = "enabled")
     private boolean enabled;
+
+    @OneToMany(mappedBy = "owner")
+    private Set<RealEstate> ownedRealEstate;
+
+    @ManyToMany
+    private Set<RealEstate> rentedRealEstate;
+
+    public Set<RealEstate> getOwnedRealEstate() {
+        return ownedRealEstate;
+    }
+
+    public void setOwnedRealEstate(Set<RealEstate> ownedRealEstate) {
+        this.ownedRealEstate = ownedRealEstate;
+    }
+
+    public Set<RealEstate> getRentedRealEstate() {
+        return rentedRealEstate;
+    }
+
+    public void setRentedRealEstate(Set<RealEstate> rentedRealEstate) {
+        this.rentedRealEstate = rentedRealEstate;
+    }
 
     @Column(name = "last_password_reset_date")
     private Timestamp lastPasswordResetDate;

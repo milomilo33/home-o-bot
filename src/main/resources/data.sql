@@ -34,3 +34,15 @@ INSERT INTO ROLE_PRIVILEGE (role_id, privilege_id) VALUES (1, 8);
 INSERT INTO ROLE_PRIVILEGE (role_id, privilege_id) VALUES (1, 9);
 
 INSERT INTO ROLE_PRIVILEGE (role_id, privilege_id) VALUES (2, 7);
+
+insert into real_estate (name) values ('Hilton Apartment');
+insert into real_estate (name) values ('MRVN''s Paint Shop');
+insert into real_estate (name) values ('Karen''s Residence');
+
+insert into real_estate_device_names (real_estate_id, device_names) values (1, 'fridge-1');
+insert into real_estate_device_names (real_estate_id, device_names) values (1, 'door-1');
+insert into real_estate_device_names (real_estate_id, device_names) values (2, 'door-2');
+insert into real_estate_device_names (real_estate_id, device_names) values (2, 'doorbell-2');
+insert into real_estate_device_names (real_estate_id, device_names) values (3, 'fridge-3');
+insert into real_estate_device_names (real_estate_id, device_names) values (3, 'door-3');
+insert into real_estate_device_names (real_estate_id, device_names) values (3, 'doorbell-3');

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -19,7 +21,18 @@ public class RealEstate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
     String name;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    Set<String> deviceNames;
+
+    @OneToMany(mappedBy = "realEstate")
+    Set<Device> devices;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    Set<String> alarmValues;
+
+    @ManyToOne
+    User owner;
 
 }
