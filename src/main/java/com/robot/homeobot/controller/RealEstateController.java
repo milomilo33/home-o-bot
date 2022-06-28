@@ -7,6 +7,7 @@ import com.robot.homeobot.exception.MyException;
 import com.robot.homeobot.model.RealEstate;
 import com.robot.homeobot.model.User;
 import com.robot.homeobot.repository.RealEstateRepository;
+import com.robot.homeobot.repository.UserRepository;
 import com.robot.homeobot.services.realestate.RealEstateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,9 @@ public class RealEstateController {
 
     @Autowired
     private RealEstateRepository realEstateRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('CREATE_REAL_ESTATE')")
@@ -77,6 +81,9 @@ public class RealEstateController {
         } catch (MyException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
+
+        List<RealEstate> res = realEstateRepository.findAll();
+        List<User> users = userRepository.findAll();
 
         return new ResponseEntity<>(allOwnerRealEstate, HttpStatus.OK);
     }

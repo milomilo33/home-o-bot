@@ -47,10 +47,17 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
+    @JsonIgnore
     private Set<RealEstate> ownedRealEstate;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+//    @ManyToMany(mappedBy = "renters", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "renters_real_estate",
+            inverseJoinColumns = @JoinColumn(name = "real_estate_id",
+                    referencedColumnName = "id"),
+            joinColumns = @JoinColumn(name = "renter_id", referencedColumnName = "id"))
     @Fetch(value = FetchMode.SUBSELECT)
+    @JsonIgnore
     private Set<RealEstate> rentedRealEstate;
 
     public Set<RealEstate> getOwnedRealEstate() {

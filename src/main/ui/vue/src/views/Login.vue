@@ -71,6 +71,12 @@ export default {
       if (userRole == "ROLE_ADMIN") {
         this.$router.push("AdminPage");
       }
+      if (userRole == "ROLE_OWNER") {
+        this.$router.push("OwnerPage");
+      }
+      if (userRole == "ROLE_RENTER") {
+        this.$router.push("RenterPage");
+      }
     },
   },
 }

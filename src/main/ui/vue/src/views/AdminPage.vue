@@ -10,6 +10,7 @@
         <b-nav-item href="/AdminPage/AllCertificates">All certificates</b-nav-item>
         <b-nav-item href="/AdminPage/NewUser">Create user</b-nav-item>
         <b-nav-item href="/AdminPage/ManageDeviceConfig">Device config</b-nav-item>
+        <b-nav-item href="/AdminPage/ManageOwners">Manage real estate</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->

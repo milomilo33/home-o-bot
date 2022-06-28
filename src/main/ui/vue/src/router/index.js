@@ -5,6 +5,7 @@ import UnregisteredPage from '../views/UnregisteredPage'
 import Login from '../views/Login'
 import Logout from '../views/Logout'
 import AdminPage from '../views/AdminPage'
+import OwnerPage from '../views/OwnerPage'
 import AllCSRs from '../components/AllCSRs'
 
 import NewUser from '../components/NewUser'
@@ -12,12 +13,17 @@ import NewUser from '../components/NewUser'
 import CreateCertificate from '../components/CreateCertificate'
 import AllCertificates from '../components/AllCertificates'
 import ManageDeviceConfig from '../components/ManageDeviceConfig'
+import ManageOwners from '../components/ManageOwners'
+import ManageRenters from '../components/ManageRenters'
+
 
 
 Vue.use(VueRouter)
 
 const Role = {
 	Admin: 'ROLE_ADMIN',
+	Owner: 'ROLE_OWNER',
+	Renter: 'ROLE_RENTER'
 }
 
 const routes = [
@@ -97,9 +103,35 @@ const routes = [
 					roles: [Role.Admin]
 				},
 			},
+			{
+				path: "ManageOwners",
+				name: "ManageOwners",
+				component: ManageOwners,
+				meta: {
+					roles: [Role.Admin]
+				},
+			},
 		],
 		meta: {
 			roles: [Role.Admin]
+		},
+	},
+	{
+		path: "/OwnerPage",
+		name: "OwnerPage",
+		component: OwnerPage,
+		children: [
+			{
+				path: "ManageRenters",
+				name: "ManageRenters",
+				component: ManageRenters,
+				meta: {
+					roles: [Role.Owner]
+				},
+			},
+		],
+		meta: {
+			roles: [Role.Owner]
 		},
 	},
 	{

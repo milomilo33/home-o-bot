@@ -53,11 +53,16 @@ public class RealEstateServiceImpl implements RealEstateService {
     public List<RealEstate> updateRealEstateOwnersForAdmin(List<ChangeRealEstateOwnersDTO> dtos) throws MyException {
         for (ChangeRealEstateOwnersDTO dto : dtos) {
             RealEstate realEstate = this.findById(dto.getRealEstateId());
-            User owner = userRepository.findByUsername(dto.getOwnerUsername());
-            if (!owner.getRoles().get(0).getName().equals("ROLE_OWNER")) {
-                throw new MyException("User is not an owner");
+            if (dto.getOwnerUsername().equals("")) {
+                realEstate.setOwner(null);
             }
-            realEstate.setOwner(owner);
+            else {
+                User owner = userRepository.findByUsername(dto.getOwnerUsername());
+                if (!owner.getRoles().get(0).getName().equals("ROLE_OWNER")) {
+                    throw new MyException("User is not an owner");
+                }
+                realEstate.setOwner(owner);
+            }
         }
 
         return realEstateRepository.findAll();

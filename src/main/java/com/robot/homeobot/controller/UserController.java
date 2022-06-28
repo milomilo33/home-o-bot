@@ -4,8 +4,10 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.robot.homeobot.dto.UserRequest;
+import com.robot.homeobot.model.Device;
 import com.robot.homeobot.model.Role;
 import com.robot.homeobot.model.User;
 import com.robot.homeobot.services.user.UserService;
@@ -69,5 +71,23 @@ public class UserController {
     @GetMapping("/user-roles")
     public List<Role> getAllRoles() {
         return this.userService.getAllRoles();
+    }
+
+    @GetMapping("/all-owners")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<User>> getAllOwners() {
+        List<User> allOwners = userService.findAll()
+                .stream().filter(u -> u.getRoles().get(0).getName().equals("ROLE_OWNER")).collect(Collectors.toList());
+
+        return new ResponseEntity<>(allOwners, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-renters")
+    @PreAuthorize("hasRole('OWNER')")
+    public ResponseEntity<List<User>> getAllRenters() {
+        List<User> allRenters = userService.findAll()
+                .stream().filter(u -> u.getRoles().get(0).getName().equals("ROLE_RENTER")).collect(Collectors.toList());
+
+        return new ResponseEntity<>(allRenters, HttpStatus.OK);
     }
 }

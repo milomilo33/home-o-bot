@@ -38,15 +38,32 @@ public class RealEstate {
     @ManyToOne(fetch = FetchType.EAGER)
     private User owner;
 
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinTable(name = "real_estate_renters",
+//            joinColumns = @JoinColumn(name = "real_estate_id",
+//                    referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "renter_id", referencedColumnName = "id"))
+    @ManyToMany(mappedBy = "rentedRealEstate", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    private Set<User> renters;
+
     public RealEstate() {}
 
-    public RealEstate(Long id, String name, Set<String> deviceNames, Set<Device> devices, Set<String> alarmValues, User owner) {
+    public RealEstate(Long id, String name, Set<String> deviceNames, Set<Device> devices, Set<String> alarmValues, User owner, Set<User> renters) {
         this.id = id;
         this.name = name;
         this.deviceNames = deviceNames;
         this.devices = devices;
         this.alarmValues = alarmValues;
         this.owner = owner;
+        this.renters = renters;
+    }
+
+    public Set<User> getRenters() {
+        return renters;
+    }
+
+    public void setRenters(Set<User> renters) {
+        this.renters = renters;
     }
 
     public Long getId() {
