@@ -169,6 +169,12 @@ public class CertificateService {
         return "Valid";
     }
 
+    public PublicKey getPublicKeyFromCertificate(String CN) {
+        Certificate certificate = keyStoreReader.readCertificate("store/keystore.jks", "password", CN);
+
+        return certificate.getPublicKey();
+    }
+
     public List<AllCertificatesDTO> getAllCertificates() throws Exception {
         List<AllCertificatesDTO> dtos = new ArrayList<>();
 

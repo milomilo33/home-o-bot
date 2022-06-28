@@ -5,7 +5,13 @@ import com.robot.homeobot.model.Device;
 import com.robot.homeobot.model.RealEstate;
 import com.robot.homeobot.repository.DeviceRepository;
 import com.robot.homeobot.repository.RealEstateRepository;
+import com.robot.homeobot.services.scheduling.DeviceTaskDefinitionBean;
+import com.robot.homeobot.services.scheduling.DeviceTaskSchedulingService;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +30,9 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Autowired
     private RealEstateRepository realEstateRepository;
+
+    @Autowired
+    private DeviceTaskSchedulingService deviceTaskSchedulingService;
 
     @Override
     public Device findById(Long id) {
@@ -62,6 +71,9 @@ public class DeviceServiceImpl implements DeviceService {
         return devices;
     }
 
+    @Autowired
+    private ObjectFactory<DeviceTaskDefinitionBean> myBeanFactory;
+
     @Override
     @Transactional
     public List<Device> updateAllDevicesConfig(List<DeviceConfigDTO> dtos) {
@@ -70,9 +82,23 @@ public class DeviceServiceImpl implements DeviceService {
             device.setPath(dto.getPath());
             device.setPeriod(dto.getPeriod());
             device.setFilter(dto.getFilter());
+
+            if (device.getPeriod() != null) {
+                deviceTaskSchedulingService.removeScheduledTask(device.getName());
+
+                DeviceTaskDefinitionBean deviceTaskDefinitionBean = myBeanFactory.getObject();
+                deviceTaskDefinitionBean.setDevice(device);
+                deviceTaskSchedulingService.scheduleATask(deviceTaskDefinitionBean, device);
+            }
         }
 
         return deviceRepository.findAll();
+    }
+
+    @Bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public DeviceTaskDefinitionBean createDeviceTaskDefinitionBean() {
+        return new DeviceTaskDefinitionBean();
     }
 
 }

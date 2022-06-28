@@ -25,13 +25,13 @@ while True:
         message.encode('utf-8'),
         padding.PSS(
             mgf=padding.MGF1(hashes.SHA256()),
-            salt_length=padding.PSS.MAX_LENGTH
+            salt_length=20
         ),
         hashes.SHA256()
     )
     signature = base64.b64encode(signature)
 
-    with open('fridge-3.txt', 'a') as the_file:
+    with open('fridge-3.txt', 'a', encoding='utf8') as the_file:
         the_file.write(message + '\n')
         the_file.write(signature.decode() + '\n')
 
