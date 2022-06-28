@@ -17,6 +17,7 @@ import ManageDeviceConfig from '../components/ManageDeviceConfig'
 import ManageOwners from '../components/ManageOwners'
 import ManageRenters from '../components/ManageRenters'
 import AllDevices from '../components/AllDevices'
+import AllDeviceMessages from '../components/AllDeviceMessages'
 
 
 
@@ -139,6 +140,14 @@ const routes = [
 					roles: [Role.Owner]
 				},
 			},
+			{
+				path: "AllDeviceMessages",
+				name: "AllDeviceMessagesOwner",
+				component: AllDeviceMessages,
+				meta: {
+					roles: [Role.Owner]
+				},
+			},
 		],
 		meta: {
 			roles: [Role.Owner]
@@ -153,6 +162,14 @@ const routes = [
 				path: "AllDevices",
 				name: "AllDevicesRenter",
 				component: AllDevices,
+				meta: {
+					roles: [Role.Renter]
+				},
+			},
+			{
+				path: "AllDeviceMessages",
+				name: "AllDeviceMessagesRenter",
+				component: AllDeviceMessages,
 				meta: {
 					roles: [Role.Renter]
 				},

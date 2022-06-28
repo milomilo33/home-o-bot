@@ -7,6 +7,7 @@
       <b-navbar-nav>
         <b-nav-item href="/OwnerPage/ManageRenters">Manage my real estate</b-nav-item>
         <b-nav-item href="/OwnerPage/AllDevices">My devices</b-nav-item>
+        <b-nav-item href="/OwnerPage/AllDeviceMessages">My device messages</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->

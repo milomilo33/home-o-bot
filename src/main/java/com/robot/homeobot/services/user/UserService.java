@@ -1,6 +1,7 @@
 package com.robot.homeobot.services.user;
 
 import com.robot.homeobot.dto.UserRequest;
+import com.robot.homeobot.dtos.DeviceDTO;
 import com.robot.homeobot.model.Device;
 import com.robot.homeobot.model.Role;
 import com.robot.homeobot.model.User;
@@ -22,5 +23,5 @@ public interface UserService {
 
     List<Role> getAllRoles();
 
-    List<Device> getAllDevicesForOwnerOrRenter();
+    List<DeviceDTO> getAllDevicesForOwnerOrRenter();
 }

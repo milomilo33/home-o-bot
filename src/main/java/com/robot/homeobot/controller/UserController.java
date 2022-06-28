@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.robot.homeobot.dto.UserRequest;
+import com.robot.homeobot.dtos.DeviceDTO;
 import com.robot.homeobot.model.Device;
 import com.robot.homeobot.model.Role;
 import com.robot.homeobot.model.User;
@@ -93,8 +94,8 @@ public class UserController {
 
     @GetMapping("/all-devices-for-role")
     @PreAuthorize("hasAnyRole('OWNER', 'RENTER')")
-    public ResponseEntity<List<Device>> getAllDevicesForOwnerOrRenter() {
-        List<Device> devices = this.userService.getAllDevicesForOwnerOrRenter();
+    public ResponseEntity<List<DeviceDTO>> getAllDevicesForOwnerOrRenter() {
+        List<DeviceDTO> devices = this.userService.getAllDevicesForOwnerOrRenter();
 
         return new ResponseEntity<>(devices, HttpStatus.OK);
     }

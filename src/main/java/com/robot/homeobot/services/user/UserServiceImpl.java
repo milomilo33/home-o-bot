@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.robot.homeobot.dto.UserRequest;
+import com.robot.homeobot.dtos.DeviceDTO;
 import com.robot.homeobot.model.Device;
 import com.robot.homeobot.model.RealEstate;
 import com.robot.homeobot.model.Role;
@@ -97,18 +98,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<Device> getAllDevicesForOwnerOrRenter() {
+    public List<DeviceDTO> getAllDevicesForOwnerOrRenter() {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        List<Device> devices = new ArrayList<>();
+        List<DeviceDTO> devices = new ArrayList<>();
         if (currentUser.getRoles().get(0).getName().equals("ROLE_OWNER")) {
             for (RealEstate re : currentUser.getOwnedRealEstate()) {
-                devices.addAll(re.getDevices());
+                for (Device device : re.getDevices()) {
+                    devices.add(new DeviceDTO(device));
+                }
             }
         }
         else if (currentUser.getRoles().get(0).getName().equals("ROLE_RENTER")) {
             for (RealEstate re : currentUser.getRentedRealEstate()) {
-                devices.addAll(re.getDevices());
+                for (Device device : re.getDevices()) {
+                    devices.add(new DeviceDTO(device));
+                }
             }
         }
 
