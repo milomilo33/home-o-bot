@@ -90,4 +90,12 @@ public class UserController {
 
         return new ResponseEntity<>(allRenters, HttpStatus.OK);
     }
+
+    @GetMapping("/all-devices-for-role")
+    @PreAuthorize("hasAnyRole('OWNER', 'RENTER')")
+    public ResponseEntity<List<Device>> getAllDevicesForOwnerOrRenter() {
+        List<Device> devices = this.userService.getAllDevicesForOwnerOrRenter();
+
+        return new ResponseEntity<>(devices, HttpStatus.OK);
+    }
 }

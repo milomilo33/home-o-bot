@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.robot.homeobot.dto.UserRequest;
+import com.robot.homeobot.model.Device;
+import com.robot.homeobot.model.RealEstate;
 import com.robot.homeobot.model.Role;
 import com.robot.homeobot.model.User;
 import com.robot.homeobot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -89,6 +93,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Role> getAllRoles() {
         return roleService.getAllRoles();
+    }
+
+    @Override
+    @Transactional
+    public List<Device> getAllDevicesForOwnerOrRenter() {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        List<Device> devices = new ArrayList<>();
+        if (currentUser.getRoles().get(0).getName().equals("ROLE_OWNER")) {
+            for (RealEstate re : currentUser.getOwnedRealEstate()) {
+                devices.addAll(re.getDevices());
+            }
+        }
+        else if (currentUser.getRoles().get(0).getName().equals("ROLE_RENTER")) {
+            for (RealEstate re : currentUser.getRentedRealEstate()) {
+                devices.addAll(re.getDevices());
+            }
+        }
+
+        return devices;
     }
 
 }

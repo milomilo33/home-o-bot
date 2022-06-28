@@ -6,6 +6,7 @@ import Login from '../views/Login'
 import Logout from '../views/Logout'
 import AdminPage from '../views/AdminPage'
 import OwnerPage from '../views/OwnerPage'
+import RenterPage from '../views/RenterPage'
 import AllCSRs from '../components/AllCSRs'
 
 import NewUser from '../components/NewUser'
@@ -15,6 +16,7 @@ import AllCertificates from '../components/AllCertificates'
 import ManageDeviceConfig from '../components/ManageDeviceConfig'
 import ManageOwners from '../components/ManageOwners'
 import ManageRenters from '../components/ManageRenters'
+import AllDevices from '../components/AllDevices'
 
 
 
@@ -129,9 +131,35 @@ const routes = [
 					roles: [Role.Owner]
 				},
 			},
+			{
+				path: "AllDevices",
+				name: "AllDevicesOwner",
+				component: AllDevices,
+				meta: {
+					roles: [Role.Owner]
+				},
+			},
 		],
 		meta: {
 			roles: [Role.Owner]
+		},
+	},
+	{
+		path: "/RenterPage",
+		name: "RenterPage",
+		component: RenterPage,
+		children: [
+			{
+				path: "AllDevices",
+				name: "AllDevicesRenter",
+				component: AllDevices,
+				meta: {
+					roles: [Role.Renter]
+				},
+			},
+		],
+		meta: {
+			roles: [Role.Renter]
 		},
 	},
 	{

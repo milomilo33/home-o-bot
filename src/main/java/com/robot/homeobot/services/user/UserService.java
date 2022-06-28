@@ -1,6 +1,7 @@
 package com.robot.homeobot.services.user;
 
 import com.robot.homeobot.dto.UserRequest;
+import com.robot.homeobot.model.Device;
 import com.robot.homeobot.model.Role;
 import com.robot.homeobot.model.User;
 import org.springframework.http.ResponseEntity;
@@ -21,5 +22,5 @@ public interface UserService {
 
     List<Role> getAllRoles();
 
-
+    List<Device> getAllDevicesForOwnerOrRenter();
 }
