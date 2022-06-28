@@ -1,5 +1,6 @@
 package com.robot.homeobot.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class RealEstate {
 
     @OneToMany(mappedBy = "realEstate", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
+    @JsonManagedReference
     private Set<Device> devices;
 
     @ElementCollection(fetch = FetchType.EAGER)

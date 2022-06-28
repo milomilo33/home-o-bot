@@ -80,13 +80,14 @@
         },
         methods: {
             updateConfig() {
-                this.axios.get(`/api/devices/update-config`, {
+                this.axios.post(`/api/devices/update-config`, this.devices, {
                                     headers: {
                                         Authorization: "Bearer " + sessionStorage.getItem("token"),
                                     },
                                 })
                                 .then(response => {
                                     this.showSuccessModal();
+                                    this.convertTimeArrayToString(response.data);
                                     this.devices = response.data;
                                 })
                                 .catch(error => {
@@ -103,11 +104,29 @@
                     },
                 })
                 .then(response => {
+                    this.convertTimeArrayToString(response.data);
                     this.devices = response.data;
                 })
                 .catch(error => {
                     console.log(error);
                 })
+            },
+
+            convertTimeArrayToString(devices) {
+                devices.forEach((device) => {
+                    if (device.period) {
+                        let timeString = '';
+                        device.period.forEach((timeStrip) => {
+                            let timeStripStr = timeStrip.toString();
+                            if (timeStripStr.length == 1) {
+                                timeStripStr = "0" + timeStripStr;
+                            }
+                            timeString += timeStripStr + ":";
+                        });
+                        timeString = timeString.slice(0, -1);
+                        device.period = timeString;
+                    }
+                });
             },
 
             hideErrorModal() {

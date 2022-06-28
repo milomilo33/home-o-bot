@@ -1,5 +1,6 @@
 package com.robot.homeobot.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -21,6 +22,7 @@ public class Device {
     private String filter;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference
     private RealEstate realEstate;
 
     @ElementCollection(fetch = FetchType.EAGER)

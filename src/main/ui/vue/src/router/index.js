@@ -11,7 +11,7 @@ import NewUser from '../components/NewUser'
 
 import CreateCertificate from '../components/CreateCertificate'
 import AllCertificates from '../components/AllCertificates'
-import ManageOwners from '../components/ManageOwners'
+import ManageDeviceConfig from '../components/ManageDeviceConfig'
 
 
 Vue.use(VueRouter)
@@ -90,9 +90,9 @@ const routes = [
 				},
 			},
 			{
-				path: "ManageOwners",
-				name: "ManageOwners",
-				component: ManageOwners,
+				path: "ManageDeviceConfig",
+				name: "ManageDeviceConfig",
+				component: ManageDeviceConfig,
 				meta: {
 					roles: [Role.Admin]
 				},

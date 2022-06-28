@@ -50,7 +50,7 @@ public class RealEstateController {
     @PostMapping("/update-owners")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RealEstate>> updateRealEstateOwnersForAdmin(@RequestBody List<ChangeRealEstateOwnersDTO> dtos) {
-        List<RealEstate> allRealEstate = null;
+        List<RealEstate> allRealEstate;
         try {
             allRealEstate = realEstateService.updateRealEstateOwnersForAdmin(dtos);
         } catch (MyException e) {
@@ -71,7 +71,7 @@ public class RealEstateController {
     @PostMapping("/update-renters")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<List<RealEstate>> updateRealEstateRentersForOwner(@RequestBody List<ChangeRealEstateRentersDTO> dtos) {
-        List<RealEstate> allOwnerRealEstate = null;
+        List<RealEstate> allOwnerRealEstate;
         try {
             allOwnerRealEstate = realEstateService.updateRealEstateRentersForOwner(dtos);
         } catch (MyException e) {

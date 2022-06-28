@@ -5,7 +5,11 @@ module.exports = defineConfig({
     proxy: {
       '^/api': {
         target: 'https://localhost:8443',
-        changeOrigin: true
+        changeOrigin: true,
+        ws: true,
+        onProxyReq: function(request) {
+          request.setHeader("origin", "https://localhost:8443");
+        },
       },
     }
   },
