@@ -32,7 +32,6 @@ rule "Danger device messages alarm"
         )
         $alarmRepo: AlarmRepository( )
     then
-        Object x = $alarmTriggeredList;
         Alarm alarm = $alarmRepo.findByDescriptionAndType("Danger device messages alarm", Alarm.AlarmType.PREDEFINED);
         alarm.getAllTriggered().addAll((List<AlarmTriggered>) $alarmTriggeredList);
         $alarmRepo.save(alarm);

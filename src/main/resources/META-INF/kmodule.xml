@@ -5,5 +5,8 @@
 	<kbase name="alarmRules" packages="alarmRules">
 		<ksession name="alarmRulesSession" type="stateful"/>
 	</kbase>
+	<kbase name="alarmTemplateRules" packages="alarmTemplateRules">
+		<ksession name="alarmTemplateRulesSession" type="stateful"/>
+	</kbase>
 
 </kmodule>

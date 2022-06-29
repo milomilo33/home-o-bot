@@ -9,12 +9,18 @@ import com.robot.homeobot.repository.DeviceRepository;
 import com.robot.homeobot.services.pki.CertificateService;
 import com.robot.homeobot.util.Base64Utility;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.drools.template.ObjectDataCompiler;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.utils.KieHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -47,7 +53,7 @@ public class DeviceTaskDefinitionBean implements Runnable {
 
     @Override
     public void run() {
-        // read messages for this device, verify them, apply filter and save them
+        // read messages for this device, verify them, save them and check/trigger alarms
         System.out.println("read messages for this device, verify them, apply filter and save them - " + device.getName());
 
         List<String> messages = new ArrayList<>();
@@ -139,7 +145,36 @@ public class DeviceTaskDefinitionBean implements Runnable {
         kieSession.dispose();
 //        Alarm alarm = alarmRepository.findByDescriptionAndType("Danger device messages alarm", Alarm.AlarmType.PREDEFINED);
 
+//        InputStream template = DeviceTaskDefinitionBean.class.getResourceAsStream("/alarmTemplateRules/alarmTemplateRules.drl");
 
+//        Alarm alarm = new Alarm(2L, "some desc", Alarm.AlarmType.MESSAGE, ".*!", device, null, null, null, new ArrayList<>());
+//        alarmRepository.save(alarm);
+
+        for (Alarm alarm : alarmRepository.findAlarmsByTypeAndDeviceTrigger(Alarm.AlarmType.MESSAGE, device)) {
+            kieSession = kieContainer.newKieSession("alarmTemplateRulesSession");
+
+            kieSession.insert(device);
+            kieSession.insert(messages);
+            kieSession.insert(alarm);
+            kieSession.insert(alarmRepository);
+            kieSession.insert(alarmTriggeredRepository);
+            fired = kieSession.fireAllRules();
+//            System.out.println("Number of Rules executed = " + fired);
+//            System.out.println(alarm.getAllTriggered().size());
+//            System.out.println(alarm.getAllTriggered().get(0).getDateTriggered());
+            kieSession.dispose();
+        }
+
+//        ObjectDataCompiler converter = new ObjectDataCompiler();
+//        String drl = converter.compile(alarms, template);
+//
+//        System.out.println(drl);
+//
+//        KieSession ksession = createKieSessionFromDRL(drl);
+//        ksession.insert(1);
+//
+//        ksession.fireAllRules();
+//        ksession.dispose();
 
         System.out.println("DONE - " + device.getName());
     }
@@ -212,5 +247,23 @@ public class DeviceTaskDefinitionBean implements Runnable {
 
     public void setDevice(Device device) {
         this.device = device;
+    }
+
+    private KieSession createKieSessionFromDRL(String drl){
+        KieHelper kieHelper = new KieHelper();
+        kieHelper.addContent(drl, ResourceType.DRL);
+
+        Results results = kieHelper.verify();
+
+        if (results.hasMessages(Message.Level.WARNING, Message.Level.ERROR)){
+            List<Message> messages = results.getMessages(Message.Level.WARNING, Message.Level.ERROR);
+            for (Message message : messages) {
+                System.out.println("Error: "+message.getText());
+            }
+
+            throw new IllegalStateException("Compilation errors were found. Check the logs.");
+        }
+
+        return kieHelper.build().newKieSession();
     }
 }
