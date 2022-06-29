@@ -16,6 +16,7 @@
                 Alarms
             </template>
             <b-dropdown-item href="/AdminPage/AlarmDefinitions">Alarm definitions</b-dropdown-item>
+            <b-dropdown-item href="/AdminPage/TriggeredAlarms">Triggered alarms</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
 
