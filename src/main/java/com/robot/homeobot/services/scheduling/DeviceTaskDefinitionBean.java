@@ -1,10 +1,16 @@
 package com.robot.homeobot.services.scheduling;
 
+import com.robot.homeobot.model.Alarm;
+import com.robot.homeobot.model.AlarmTriggered;
 import com.robot.homeobot.model.Device;
+import com.robot.homeobot.repository.AlarmRepository;
+import com.robot.homeobot.repository.AlarmTriggeredRepository;
 import com.robot.homeobot.repository.DeviceRepository;
 import com.robot.homeobot.services.pki.CertificateService;
 import com.robot.homeobot.util.Base64Utility;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +35,15 @@ public class DeviceTaskDefinitionBean implements Runnable {
 
     @Autowired
     private CertificateService certificateService;
+
+    @Autowired
+    private KieContainer kieContainer;
+
+    @Autowired
+    private AlarmRepository alarmRepository;
+
+    @Autowired
+    private AlarmTriggeredRepository alarmTriggeredRepository;
 
     @Override
     public void run() {
@@ -105,6 +120,26 @@ public class DeviceTaskDefinitionBean implements Runnable {
         device.setMessages(messages);
         device.setMessageTypes(messageTypes);
         deviceRepository.save(device);
+
+        // check if messages trigger alarms
+        KieSession kieSession = kieContainer.newKieSession("alarmRulesSession");
+
+//        device.setRealEstate(null);
+        kieSession.insert(device);
+        List<String> messagesWithTypes = new ArrayList<>();
+        for (int i = 0; i < messages.size(); i++) {
+            String messageWithType = messages.get(i) + "|" + messageTypes.get(i);
+            messagesWithTypes.add(messageWithType);
+        }
+        kieSession.insert(messagesWithTypes);
+        kieSession.insert(alarmRepository);
+        kieSession.insert(alarmTriggeredRepository);
+        int fired = kieSession.fireAllRules();
+        System.out.println("Number of Rules executed = " + fired);
+        kieSession.dispose();
+//        Alarm alarm = alarmRepository.findByDescriptionAndType("Danger device messages alarm", Alarm.AlarmType.PREDEFINED);
+
+
 
         System.out.println("DONE - " + device.getName());
     }

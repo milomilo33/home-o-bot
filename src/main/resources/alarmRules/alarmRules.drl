@@ -12,11 +12,11 @@ function boolean debug(String x) {
 
 rule "Danger device messages alarm"
     salience 3
-    dialect "mvel"
     when
         eval(debug("hey"))
-        $d: Device(  )
+        $d: Device( )
         $messagesWithType: List( )
+        $alarmTriggeredRepo: AlarmTriggeredRepository( )
         $alarmTriggeredList: List() from accumulate(
             String( $messageWithType: this ) from $messagesWithType,
             init( List triggeredList = new ArrayList(); ),
@@ -25,13 +25,16 @@ rule "Danger device messages alarm"
                        at.setValueTriggeredOn($messageWithType.split("\\|")[0]);
                        at.setDateTriggered(LocalDateTime.now());
                        at.setDeviceTriggeredOn($d);
+                       $alarmTriggeredRepo.save(at);
                        triggeredList.add(at);
                     } ),
             result( triggeredList )
         )
         $alarmRepo: AlarmRepository( )
     then
+        Object x = $alarmTriggeredList;
         Alarm alarm = $alarmRepo.findByDescriptionAndType("Danger device messages alarm", Alarm.AlarmType.PREDEFINED);
         alarm.getAllTriggered().addAll((List<AlarmTriggered>) $alarmTriggeredList);
         $alarmRepo.save(alarm);
+        System.out.println("hey2");
 end

@@ -7,6 +7,7 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Device {
@@ -40,6 +41,26 @@ public class Device {
     public void setMessageTypes(List<String> messageTypes) {
         this.messageTypes = messageTypes;
     }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Device device = (Device) o;
+//        return Objects.equals(id, device.id) &&
+//                Objects.equals(name, device.name) &&
+//                Objects.equals(path, device.path) &&
+//                Objects.equals(period, device.period) &&
+//                Objects.equals(filter, device.filter) &&
+//                Objects.equals(realEstate, device.realEstate) &&
+//                Objects.equals(messages, device.messages) &&
+//                Objects.equals(messageTypes, device.messageTypes);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id, name, path, period, filter, realEstate, messages, messageTypes);
+//    }
 
     public Device() {}
 
