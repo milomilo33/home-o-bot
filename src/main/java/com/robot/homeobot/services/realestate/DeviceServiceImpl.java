@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DeviceServiceImpl implements DeviceService {
@@ -107,21 +108,25 @@ public class DeviceServiceImpl implements DeviceService {
         return new DeviceTaskDefinitionBean();
     }
 
-
-    private final KieContainer kieContainer;
-
-    @Autowired
-    public DeviceServiceImpl(KieContainer kieContainer) {
-        this.kieContainer = kieContainer;
+    @Override
+    public List<String> getAllDeviceNames() {
+        return deviceRepository.findAll().stream().map(Device::getName).collect(Collectors.toList());
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void test() {
-        KieSession kieSession = kieContainer.newKieSession("alarmRulesSession");
-
-//        kieSession.insert(user);
-        int fired = kieSession.fireAllRules();
-        System.out.println("Number of Rules executed = " + fired);
-        kieSession.dispose();
-    }
+//    private final KieContainer kieContainer;
+//
+//    @Autowired
+//    public DeviceServiceImpl(KieContainer kieContainer) {
+//        this.kieContainer = kieContainer;
+//    }
+//
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void test() {
+//        KieSession kieSession = kieContainer.newKieSession("alarmRulesSession");
+//
+////        kieSession.insert(user);
+//        int fired = kieSession.fireAllRules();
+//        System.out.println("Number of Rules executed = " + fired);
+//        kieSession.dispose();
+//    }
 }

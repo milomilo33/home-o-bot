@@ -3,14 +3,14 @@ package com.robot.homeobot.dtos;
 public class NewAlarmDTO {
 
     private String description;
-    private Long deviceId;
+    private String deviceName;
     private String triggerPattern;
 
     public NewAlarmDTO() {}
 
-    public NewAlarmDTO(String description, Long deviceId, String triggerPattern) {
+    public NewAlarmDTO(String description, String deviceName, String triggerPattern) {
         this.description = description;
-        this.deviceId = deviceId;
+        this.deviceName = deviceName;
         this.triggerPattern = triggerPattern;
     }
 
@@ -22,12 +22,12 @@ public class NewAlarmDTO {
         this.description = description;
     }
 
-    public Long getDeviceId() {
-        return deviceId;
+    public String getDeviceName() {
+        return deviceName;
     }
 
-    public void setDeviceId(Long deviceId) {
-        this.deviceId = deviceId;
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 
     public String getTriggerPattern() {

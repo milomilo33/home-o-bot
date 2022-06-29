@@ -11,6 +11,12 @@
         <b-nav-item href="/AdminPage/NewUser">Create user</b-nav-item>
         <b-nav-item href="/AdminPage/ManageDeviceConfig">Device config</b-nav-item>
         <b-nav-item href="/AdminPage/ManageOwners">Manage real estate</b-nav-item>
+        <b-nav-item-dropdown left>
+            <template #button-content>
+                Alarms
+            </template>
+            <b-dropdown-item href="/AdminPage/AlarmDefinitions">Alarm definitions</b-dropdown-item>
+        </b-nav-item-dropdown>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->

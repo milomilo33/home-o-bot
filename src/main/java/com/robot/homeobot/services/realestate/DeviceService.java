@@ -9,4 +9,5 @@ public interface DeviceService {
     Device findById(Long id);
     List<Device> findAll();
     List<Device> updateAllDevicesConfig(List<DeviceConfigDTO> dtos);
+    List<String> getAllDeviceNames();
 }

@@ -18,6 +18,7 @@ import ManageOwners from '../components/ManageOwners'
 import ManageRenters from '../components/ManageRenters'
 import AllDevices from '../components/AllDevices'
 import AllDeviceMessages from '../components/AllDeviceMessages'
+import AlarmDefinitions from '../components/AlarmDefinitions'
 
 
 
@@ -110,6 +111,14 @@ const routes = [
 				path: "ManageOwners",
 				name: "ManageOwners",
 				component: ManageOwners,
+				meta: {
+					roles: [Role.Admin]
+				},
+			},
+			{
+				path: "AlarmDefinitions",
+				name: "AlarmDefinitions",
+				component: AlarmDefinitions,
 				meta: {
 					roles: [Role.Admin]
 				},

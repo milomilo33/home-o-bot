@@ -27,15 +27,15 @@ public class AlarmService {
 
     @Transactional
     public void createNewMessageAlarm(NewAlarmDTO newAlarmDTO) throws MyException {
-        Long deviceId = newAlarmDTO.getDeviceId();
+        String deviceName = newAlarmDTO.getDeviceName();
         String description = newAlarmDTO.getDescription();
         String triggerPattern = newAlarmDTO.getTriggerPattern();
 
-        if (deviceId == null || description == null || triggerPattern == null) {
+        if (deviceName == null || description == null || triggerPattern == null) {
             throw new MyException("Invalid input.");
         }
 
-        Device device = deviceRepository.findById(deviceId).orElse(null);
+        Device device = deviceRepository.findByName(deviceName);
 
         if (device == null) {
             throw new MyException("Nonexistent device.");
@@ -46,6 +46,7 @@ public class AlarmService {
         alarm.setDeviceTrigger(device);
         alarm.setMessageTriggerPattern(triggerPattern);
         alarm.setDescription(description);
+        alarm.setType(Alarm.AlarmType.MESSAGE);
 
         alarmRepository.save(alarm);
     }
