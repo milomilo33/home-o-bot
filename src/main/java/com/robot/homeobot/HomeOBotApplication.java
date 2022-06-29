@@ -7,6 +7,9 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieScanner;
+import org.kie.api.runtime.KieContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,8 +48,14 @@ public class HomeOBotApplication {
 				.info(new Info().title(apiTitle).version("v1"));
 	}
 
-	@EventListener(ApplicationReadyEvent.class)
-	public void test() {
-//		System.out.println(userRepository.findAll().get(0).getRoles().get(0).getName());
+//	@EventListener(ApplicationReadyEvent.class)
+//	public void test() {
+////		System.out.println(userRepository.findAll().get(0).getRoles().get(0).getName());
+//	}
+
+	@Bean
+	public KieContainer kieContainer() {
+		KieServices ks = KieServices.Factory.get();
+		return ks.getKieClasspathContainer();
 	}
 }
