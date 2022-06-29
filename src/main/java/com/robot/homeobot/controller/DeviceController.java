@@ -6,6 +6,7 @@ import com.robot.homeobot.exception.MyException;
 import com.robot.homeobot.model.Device;
 import com.robot.homeobot.model.RealEstate;
 import com.robot.homeobot.services.realestate.DeviceService;
+import org.javers.spring.annotation.JaversAuditable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ public class DeviceController {
     private DeviceService deviceService;
 
     @GetMapping("/all")
+    @JaversAuditable
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Device>> getAllDevices() {
         List<Device> allDevices = deviceService.findAll();
