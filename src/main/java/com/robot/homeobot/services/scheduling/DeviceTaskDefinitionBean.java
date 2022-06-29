@@ -36,6 +36,7 @@ public class DeviceTaskDefinitionBean implements Runnable {
         System.out.println("read messages for this device, verify them, apply filter and save them - " + device.getName());
 
         List<String> messages = new ArrayList<>();
+        List<String> messageTypes = new ArrayList<>();
         List<String> lines;
         try {
             lines = Files.readAllLines(Paths.get(device.getPath()), StandardCharsets.UTF_8);
@@ -53,7 +54,7 @@ public class DeviceTaskDefinitionBean implements Runnable {
                 signature = lines.get(iter + 1);
             } catch (IndexOutOfBoundsException exc) {
                 // nema potpisa; logovati?
-                addMessageIfFilter(message," (MESSAGE IS NOT DIGITALLY SIGNED!)", messages, device.getFilter());
+                addMessageIfFilter(message," (MESSAGE IS NOT DIGITALLY SIGNED!)", messages, device.getFilter(), messageTypes);
                 iter += 2;
                 continue;
             }
@@ -61,13 +62,13 @@ public class DeviceTaskDefinitionBean implements Runnable {
             try {
                 String status = certificateService.getCertificateStatusAndVerify(device.getName());
                 if (!status.equals("Valid")) {
-                    addMessageIfFilter(message," (CERTIFICATE IS NOT VALID!)", messages, device.getFilter());
+                    addMessageIfFilter(message," (CERTIFICATE IS NOT VALID!)", messages, device.getFilter(), messageTypes);
                     iter += 2;
                     continue;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                addMessageIfFilter(message, String.format(" (%s)", e.getMessage()), messages, device.getFilter());
+                addMessageIfFilter(message, String.format(" (%s)", e.getMessage()), messages, device.getFilter(), messageTypes);
                 iter += 2;
                 continue;
             }
@@ -78,18 +79,18 @@ public class DeviceTaskDefinitionBean implements Runnable {
                 signatureBytes = Base64Utility.decode(signature);
             } catch (IOException e) {
                 e.printStackTrace();
-                addMessageIfFilter(message, " (INCORRECT DIGITAL SIGNATURE FORMAT!)", messages, device.getFilter());
+                addMessageIfFilter(message, " (INCORRECT DIGITAL SIGNATURE FORMAT!)", messages, device.getFilter(), messageTypes);
                 iter += 2;
                 continue;
             }
             boolean signatureValid = verifySignature(message.getBytes(), signatureBytes, devicePublicKey);
             if (!signatureValid) {
-                addMessageIfFilter(message, " (DIGITAL SIGNATURE INVALID!)", messages, device.getFilter());
+                addMessageIfFilter(message, " (DIGITAL SIGNATURE INVALID!)", messages, device.getFilter(), messageTypes);
                 iter += 2;
                 continue;
             }
 
-            addMessageIfFilter(message, "", messages, device.getFilter());
+            addMessageIfFilter(message, "", messages, device.getFilter(), messageTypes);
 
             iter += 2;
         }
@@ -97,8 +98,12 @@ public class DeviceTaskDefinitionBean implements Runnable {
         for (String m : messages) {
             System.out.println(m);
         }
+        for (String m : messageTypes) {
+            System.out.println(m);
+        }
 
         device.setMessages(messages);
+        device.setMessageTypes(messageTypes);
         deviceRepository.save(device);
 
         System.out.println("DONE - " + device.getName());
@@ -126,16 +131,43 @@ public class DeviceTaskDefinitionBean implements Runnable {
         return false;
     }
 
-    private void addMessageIfFilter(String message, String addendum, List<String> messages, String filter) {
+    private void addMessageIfFilter(String message, String addendum, List<String> messages, String filter, List<String> messageTypes) {
         if (filter == null) {
-            messages.add(message + addendum);
-            return;
+            String messageVal = message.split("\\|")[0];
+            try {
+                String messageType = message.split("\\|")[1];
+                if (!messageType.equals("Normal") && !messageType.equals("DANGER")) {
+                    messages.add(messageVal + addendum + " (invalid message type!)");
+                    messageTypes.add("INVALID_TYPE");
+                    return;
+                }
+                messages.add(messageVal + addendum);
+                messageTypes.add(messageType);
+                return;
+            } catch (IndexOutOfBoundsException exc) {
+                messages.add(messageVal + addendum + " (missing message type!)");
+                messageTypes.add("NO_TYPE");
+                return;
+            }
         }
 
-        boolean match = Pattern.matches(filter, message);
+        String messageVal = message.split("\\|")[0];
+        boolean match = Pattern.matches(filter, messageVal);
         System.out.println(filter + " " + message + " " + match);
         if (match || filter.equals("")) {
-            messages.add(message + addendum);
+            try {
+                String messageType = message.split("\\|")[1];
+                if (!messageType.equals("Normal") && !messageType.equals("DANGER")) {
+                    messages.add(messageVal + addendum + " (invalid message type!)");
+                    messageTypes.add("INVALID_TYPE");
+                    return;
+                }
+                messages.add(messageVal + addendum);
+                messageTypes.add(messageType);
+            } catch (IndexOutOfBoundsException exc) {
+                messages.add(messageVal + addendum + " (missing message type!)");
+                messageTypes.add("NO_TYPE");
+            }
         }
     }
 

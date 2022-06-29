@@ -29,9 +29,21 @@ public class Device {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<String> messages;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<String> messageTypes;
+
+    public List<String> getMessageTypes() {
+        return messageTypes;
+    }
+
+    public void setMessageTypes(List<String> messageTypes) {
+        this.messageTypes = messageTypes;
+    }
+
     public Device() {}
 
-    public Device(Long id, String name, String path, LocalTime period, String filter, RealEstate realEstate, List<String> messages) {
+    public Device(Long id, String name, String path, LocalTime period, String filter, RealEstate realEstate, List<String> messages, List<String> messageTypes) {
         this.id = id;
         this.name = name;
         this.path = path;
@@ -39,6 +51,7 @@ public class Device {
         this.filter = filter;
         this.realEstate = realEstate;
         this.messages = messages;
+        this.messageTypes = messageTypes;
     }
 
     public Long getId() {
