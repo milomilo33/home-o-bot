@@ -7,6 +7,7 @@
       <b-navbar-nav>
         <b-nav-item href="/RenterPage/AllDevices">My devices</b-nav-item>
         <b-nav-item href="/RenterPage/AllDeviceMessages">My device messages</b-nav-item>
+        <b-nav-item href="/RenterPage/Report">Report</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->

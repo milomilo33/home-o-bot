@@ -20,6 +20,7 @@ import AllDevices from '../components/AllDevices'
 import AllDeviceMessages from '../components/AllDeviceMessages'
 import AlarmDefinitions from '../components/AlarmDefinitions'
 import TriggeredAlarms from '../components/TriggeredAlarms'
+import Report from '../components/Report'
 
 
 
@@ -166,6 +167,14 @@ const routes = [
 					roles: [Role.Owner]
 				},
 			},
+			{
+				path: "Report",
+				name: "OwnerReport",
+				component: Report,
+				meta: {
+					roles: [Role.Owner]
+				},
+			},
 		],
 		meta: {
 			roles: [Role.Owner]
@@ -188,6 +197,14 @@ const routes = [
 				path: "AllDeviceMessages",
 				name: "AllDeviceMessagesRenter",
 				component: AllDeviceMessages,
+				meta: {
+					roles: [Role.Renter]
+				},
+			},
+			{
+				path: "Report",
+				name: "RenterReport",
+				component: Report,
 				meta: {
 					roles: [Role.Renter]
 				},

@@ -71,7 +71,7 @@
                                 description: alarm.description,
                                 type: alarm.type,
                                 messageTriggerPattern: alarm.messageTriggerPattern,
-                                deviceTrigger: alarm.deviceTrigger,
+                                deviceTrigger: alarmTriggered.deviceTriggeredOn,
                                 triggerMessage: alarmTriggered.valueTriggeredOn,
                                 triggeredAt: alarmTriggered.dateTriggered,
                             };

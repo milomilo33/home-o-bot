@@ -1,8 +1,7 @@
 package com.robot.homeobot.controller;
 
 
-import com.robot.homeobot.dtos.DeviceConfigDTO;
-import com.robot.homeobot.dtos.NewAlarmDTO;
+import com.robot.homeobot.dtos.*;
 import com.robot.homeobot.exception.MyException;
 import com.robot.homeobot.model.Alarm;
 import com.robot.homeobot.model.Device;
@@ -47,6 +46,19 @@ public class AlarmController {
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/get-report", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('OWNER', 'RENTER')")
+    public ResponseEntity<List<ReportResponseDTO>> getReport(@RequestBody ReportRequestDTO reportRequestDTO) {
+        List<ReportResponseDTO> response;
+        try {
+            response = alarmService.getAlarmReport(reportRequestDTO);
+        } catch (MyException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }
