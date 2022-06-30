@@ -10,6 +10,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -38,7 +39,20 @@ public class RealEstate {
     @ManyToOne(fetch = FetchType.EAGER)
     private User owner;
 
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        RealEstate that = (RealEstate) o;
+//        return Objects.equals(id, that.id);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id);
+//    }
+
+    //    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinTable(name = "real_estate_renters",
 //            joinColumns = @JoinColumn(name = "real_estate_id",
 //                    referencedColumnName = "id"),

@@ -1,0 +1,66 @@
+//template header
+//id
+//description
+//type
+//messageTriggerPattern
+//deviceTrigger
+//logTriggerType
+//logTriggerValue
+//logTriggerDate
+//allTriggered
+//
+//package alarmTemplateRules;
+//
+//import com.robot.homeobot.model.*;
+//
+//template "alarmTemplateRules"
+//
+//rule "Device message template rule"
+//    when
+//        $o: Object( )
+//    then
+//        System.out.println(@{description});
+//    end
+//
+//end template
+
+package alarmTemplateRules;
+
+import java.util.*
+import java.time.*;
+import com.robot.homeobot.model.*;
+import com.robot.homeobot.repository.*;
+import java.util.regex.Pattern;
+
+function boolean debug(String x) {
+    System.out.println("lhs_debug(): "+x);
+    return true;
+}
+
+rule "Regex device messages alarm"
+    salience 3
+    when
+        eval(debug("hey from regex"))
+        $d: Device( )
+        $messages: List( )
+        $a: Alarm( $pattern: messageTriggerPattern )
+        $alarmTriggeredRepo: AlarmTriggeredRepository( )
+        $alarmTriggeredList: List() from accumulate(
+            String( $message: this ) from $messages,
+            init( List triggeredList = new ArrayList(); ),
+            action( if (Pattern.matches($pattern, $message)) {
+                       AlarmTriggered at = new AlarmTriggered();
+                       at.setValueTriggeredOn($message);
+                       at.setDateTriggered(LocalDateTime.now());
+                       at.setDeviceTriggeredOn($d);
+                       $alarmTriggeredRepo.save(at);
+                       triggeredList.add(at);
+                    } ),
+            result( triggeredList )
+        )
+        $alarmRepo: AlarmRepository( )
+    then
+        $a.getAllTriggered().addAll((List<AlarmTriggered>) $alarmTriggeredList);
+        $alarmRepo.save($a);
+        System.out.println("hey from regex2");
+end

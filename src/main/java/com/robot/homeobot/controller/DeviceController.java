@@ -41,4 +41,12 @@ public class DeviceController {
         return new ResponseEntity<>(allDevices, HttpStatus.OK);
     }
 
+    @GetMapping("/all-names")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<String>> getAllDeviceNames() {
+        List<String> allDeviceNames = deviceService.getAllDeviceNames();
+
+        return new ResponseEntity<>(allDeviceNames, HttpStatus.OK);
+    }
+
 }

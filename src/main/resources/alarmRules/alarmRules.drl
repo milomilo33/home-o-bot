@@ -1,0 +1,39 @@
+package alarmRules;
+
+import java.util.*
+import java.time.*;
+import com.robot.homeobot.model.*;
+import com.robot.homeobot.repository.*;
+
+function boolean debug(String x) {
+    System.out.println("lhs_debug(): "+x);
+    return true;
+}
+
+rule "Danger device messages alarm"
+    salience 3
+    when
+        eval(debug("hey"))
+        $d: Device( )
+        $messagesWithType: List( )
+        $alarmTriggeredRepo: AlarmTriggeredRepository( )
+        $alarmTriggeredList: List() from accumulate(
+            String( $messageWithType: this ) from $messagesWithType,
+            init( List triggeredList = new ArrayList(); ),
+            action( if ($messageWithType.split("\\|")[1].equals("DANGER")) {
+                       AlarmTriggered at = new AlarmTriggered();
+                       at.setValueTriggeredOn($messageWithType.split("\\|")[0]);
+                       at.setDateTriggered(LocalDateTime.now());
+                       at.setDeviceTriggeredOn($d);
+                       $alarmTriggeredRepo.save(at);
+                       triggeredList.add(at);
+                    } ),
+            result( triggeredList )
+        )
+        $alarmRepo: AlarmRepository( )
+    then
+        Alarm alarm = $alarmRepo.findByDescriptionAndType("Danger device messages alarm", Alarm.AlarmType.PREDEFINED);
+        alarm.getAllTriggered().addAll((List<AlarmTriggered>) $alarmTriggeredList);
+        $alarmRepo.save(alarm);
+        System.out.println("hey2");
+end

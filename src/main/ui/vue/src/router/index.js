@@ -18,6 +18,9 @@ import ManageOwners from '../components/ManageOwners'
 import ManageRenters from '../components/ManageRenters'
 import AllDevices from '../components/AllDevices'
 import AllDeviceMessages from '../components/AllDeviceMessages'
+import AlarmDefinitions from '../components/AlarmDefinitions'
+import TriggeredAlarms from '../components/TriggeredAlarms'
+import Report from '../components/Report'
 
 
 
@@ -114,6 +117,22 @@ const routes = [
 					roles: [Role.Admin]
 				},
 			},
+			{
+				path: "AlarmDefinitions",
+				name: "AlarmDefinitions",
+				component: AlarmDefinitions,
+				meta: {
+					roles: [Role.Admin]
+				},
+			},
+			{
+				path: "TriggeredAlarms",
+				name: "TriggeredAlarms",
+				component: TriggeredAlarms,
+				meta: {
+					roles: [Role.Admin]
+				},
+			},
 		],
 		meta: {
 			roles: [Role.Admin]
@@ -148,6 +167,14 @@ const routes = [
 					roles: [Role.Owner]
 				},
 			},
+			{
+				path: "Report",
+				name: "OwnerReport",
+				component: Report,
+				meta: {
+					roles: [Role.Owner]
+				},
+			},
 		],
 		meta: {
 			roles: [Role.Owner]
@@ -170,6 +197,14 @@ const routes = [
 				path: "AllDeviceMessages",
 				name: "AllDeviceMessagesRenter",
 				component: AllDeviceMessages,
+				meta: {
+					roles: [Role.Renter]
+				},
+			},
+			{
+				path: "Report",
+				name: "RenterReport",
+				component: Report,
 				meta: {
 					roles: [Role.Renter]
 				},

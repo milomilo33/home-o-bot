@@ -50,4 +50,10 @@ public class CustomUserDetailsService implements UserDetailsService {
        else return loadUserByUsername(username);
     }
 
+    public void checkIpBlocked(String ip)  {
+        if (loginAttemptService.isBlocked(ip)) {
+            throw new RuntimeException("blocked");
+        }
+    }
+
 }

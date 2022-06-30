@@ -11,6 +11,7 @@ import com.robot.homeobot.exception.ResourceConflictException;
 import com.robot.homeobot.model.JwtBlacklist;
 import com.robot.homeobot.model.User;
 import com.robot.homeobot.repository.JwtBlacklistRepository;
+import com.robot.homeobot.services.user.CustomUserDetailsService;
 import com.robot.homeobot.services.user.UserService;
 import com.robot.homeobot.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,9 @@ public class AuthenticationController {
 
     @Autowired
     private JwtBlacklistRepository jwtBlacklistRepository;
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     // Prvi endpoint koji pogadja korisnik kada se loguje.
     // Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.

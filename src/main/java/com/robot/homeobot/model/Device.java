@@ -7,6 +7,7 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Device {
@@ -29,9 +30,41 @@ public class Device {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<String> messages;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<String> messageTypes;
+
+    public List<String> getMessageTypes() {
+        return messageTypes;
+    }
+
+    public void setMessageTypes(List<String> messageTypes) {
+        this.messageTypes = messageTypes;
+    }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Device device = (Device) o;
+//        return Objects.equals(id, device.id) &&
+//                Objects.equals(name, device.name) &&
+//                Objects.equals(path, device.path) &&
+//                Objects.equals(period, device.period) &&
+//                Objects.equals(filter, device.filter) &&
+//                Objects.equals(realEstate, device.realEstate) &&
+//                Objects.equals(messages, device.messages) &&
+//                Objects.equals(messageTypes, device.messageTypes);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id, name, path, period, filter, realEstate, messages, messageTypes);
+//    }
+
     public Device() {}
 
-    public Device(Long id, String name, String path, LocalTime period, String filter, RealEstate realEstate, List<String> messages) {
+    public Device(Long id, String name, String path, LocalTime period, String filter, RealEstate realEstate, List<String> messages, List<String> messageTypes) {
         this.id = id;
         this.name = name;
         this.path = path;
@@ -39,6 +72,7 @@ public class Device {
         this.filter = filter;
         this.realEstate = realEstate;
         this.messages = messages;
+        this.messageTypes = messageTypes;
     }
 
     public Long getId() {

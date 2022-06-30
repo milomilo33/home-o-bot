@@ -7,11 +7,18 @@ import com.robot.homeobot.repository.DeviceRepository;
 import com.robot.homeobot.repository.RealEstateRepository;
 import com.robot.homeobot.services.scheduling.DeviceTaskDefinitionBean;
 import com.robot.homeobot.services.scheduling.DeviceTaskSchedulingService;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieScanner;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DeviceServiceImpl implements DeviceService {
@@ -101,4 +109,25 @@ public class DeviceServiceImpl implements DeviceService {
         return new DeviceTaskDefinitionBean();
     }
 
+    @Override
+    public List<String> getAllDeviceNames() {
+        return deviceRepository.findAll().stream().map(Device::getName).collect(Collectors.toList());
+    }
+
+//    private final KieContainer kieContainer;
+//
+//    @Autowired
+//    public DeviceServiceImpl(KieContainer kieContainer) {
+//        this.kieContainer = kieContainer;
+//    }
+//
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void test() {
+//        KieSession kieSession = kieContainer.newKieSession("alarmRulesSession");
+//
+////        kieSession.insert(user);
+//        int fired = kieSession.fireAllRules();
+//        System.out.println("Number of Rules executed = " + fired);
+//        kieSession.dispose();
+//    }
 }

@@ -10,9 +10,9 @@ with open("fridge-3.key", "rb") as key_file:
         password=None,
     )
 
-normal_messages = ["Temperature is 0°C", "Temperature is 1°C", "Temperature is 2°C",
-                   "Temperature is 3°C", "Temperature is 4°C", "Temperature is 5°C"]
-danger_messages = ["Temperature is exceedingly high!", "Non-empty fridge turned off"]
+normal_messages = ["Temperature is 0°C|Normal", "Temperature is 1°C|Normal", "Temperature is 2°C|Normal",
+                   "Temperature is 3°C|Normal", "Temperature is 4°C|Normal", "Temperature is 5°C|Normal"]
+danger_messages = ["Temperature is exceedingly high!|DANGER", "Non-empty fridge turned off|DANGER"]
 
 while True:
     messages = np.random.choice(

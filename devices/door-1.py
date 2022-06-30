@@ -10,8 +10,8 @@ with open("door-1.key", "rb") as key_file:
         password=None,
     )
 
-normal_messages = ["Door locked", "Door unlocked", "Door opened", "Door closed"]
-danger_messages = ["Too many failed unlocking attempts", "Door broken"]
+normal_messages = ["Door locked|Normal", "Door unlocked|Normal", "Door opened|Normal", "Door closed|Normal"]
+danger_messages = ["Too many failed unlocking attempts|DANGER", "Door broken|DANGER"]
 
 while True:
     messages = np.random.choice(

@@ -54,3 +54,5 @@ insert into real_estate_device_names (real_estate_id, device_names) values (2, '
 insert into real_estate_device_names (real_estate_id, device_names) values (3, 'fridge-3');
 insert into real_estate_device_names (real_estate_id, device_names) values (3, 'door-3');
 insert into real_estate_device_names (real_estate_id, device_names) values (3, 'doorbell-3');
+
+insert into alarms (description, type) values ('Danger device messages alarm', 'PREDEFINED')

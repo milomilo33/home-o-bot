@@ -10,8 +10,8 @@ with open("doorbell-3.key", "rb") as key_file:
         password=None,
     )
 
-normal_messages = ["Doorbell rung", "Doorbell sound changed"]
-danger_messages = ["Doorbell rung too many times", "Doorbell broken"]
+normal_messages = ["Doorbell rung|Normal", "Doorbell sound changed|Normal"]
+danger_messages = ["Doorbell rung too many times|DANGER", "Doorbell broken|DANGER"]
 
 while True:
     messages = np.random.choice(
