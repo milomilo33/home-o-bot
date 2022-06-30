@@ -21,6 +21,7 @@ import AllDeviceMessages from '../components/AllDeviceMessages'
 import AlarmDefinitions from '../components/AlarmDefinitions'
 import TriggeredAlarms from '../components/TriggeredAlarms'
 import Report from '../components/Report'
+import Logs from '../components/Logs'
 
 
 
@@ -129,6 +130,14 @@ const routes = [
 				path: "TriggeredAlarms",
 				name: "TriggeredAlarms",
 				component: TriggeredAlarms,
+				meta: {
+					roles: [Role.Admin]
+				},
+			},
+			{
+				path: "Logs",
+				name: "Logs",
+				component: Logs,
 				meta: {
 					roles: [Role.Admin]
 				},

@@ -18,6 +18,7 @@
             <b-dropdown-item href="/AdminPage/AlarmDefinitions">Alarm definitions</b-dropdown-item>
             <b-dropdown-item href="/AdminPage/TriggeredAlarms">Triggered alarms</b-dropdown-item>
         </b-nav-item-dropdown>
+        <b-nav-item href="/AdminPage/Logs">Logs</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->
