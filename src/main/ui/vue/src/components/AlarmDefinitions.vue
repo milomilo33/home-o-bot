@@ -7,7 +7,7 @@
         </b-table>
 
         <b-form inline style="margin-left:25px;">
-            <label>Entity:</label>
+            <label>Device name:</label>
             <b-form-select id="selectedDeviceName"
                         name="selectedDeviceName"
                         placeholder="Device Name"
