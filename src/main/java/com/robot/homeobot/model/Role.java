@@ -51,7 +51,7 @@ public class Role implements GrantedAuthority {
     }
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "roles" , fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "roles" , fetch = FetchType.EAGER)
     private Set<User> users;
 
     @JsonIgnore

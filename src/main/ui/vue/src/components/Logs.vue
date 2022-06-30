@@ -2,6 +2,47 @@
     <div>
         <h1>Logs</h1>
         <br>
+
+        <b-form inline style="margin-left:25px;">
+            <label>Entity:</label>
+            <b-form-select id="entity"
+                        name="entity"
+                        placeholder="Entity"
+                        class="mb-2 mr-sm-2 mb-sm-0"
+                        :options="entityOptions"
+                        v-model="entity"
+                        style="margin-left:10px;">
+            </b-form-select>
+
+            <label>Type:</label>
+            <b-form-select id="type"
+                        name="type"
+                        placeholder="Type"
+                        class="mb-2 mr-sm-2 mb-sm-0"
+                        :options="typeOptions"
+                        v-model="type"
+                        style="margin-left:10px;">
+            </b-form-select>
+
+            <b-form-input id="author"
+                        name="author"
+                        placeholder="Author"
+                        class="mb-2 mr-sm-2 mb-sm-0"
+                        v-model="author">
+            </b-form-input>
+
+            <b-form-input id="fullLogRegex"
+                        name="fullLogRegex"
+                        placeholder="Regex full log"
+                        class="mb-2 mr-sm-2 mb-sm-0"
+                        v-model="fullLogRegex">
+            </b-form-input>
+
+            <b-button @click="onSubmit" class="mb-2 mr-sm-2 mb-sm-0">Search</b-button>
+        </b-form>
+
+        <br>
+
         <b-table striped hover :items="logs" :fields="logFields">
             <template #cell(showFullLog)="row">
                 <button class="btn btn-success" @click="showFullLogModal(row)">Show full log</button>
@@ -31,10 +72,17 @@
     export default {
         data() {
             return {
+                entity: '',
+                entityOptions: [],
+                type: '',
+                typeOptions: [],
+                author: '',
+                fullLogRegex: '',
                 changedProperties: '',
                 fullLog: '',
                 selectedRow: {},
                 logs: [],
+                logsCopy: [],
                 logFields: [
                     {
                         key: 'globalId.entity',
@@ -51,12 +99,14 @@
                     {
                         key: 'commitMetadata.author',
                         headerTitle: 'Author',
-                        label: 'Author'
+                        label: 'Author',
+                        sortable: true
                     },
                     {
                         key: 'commitMetadata.commitDate',
                         headerTitle: 'Timestamp',
-                        label: 'Timestamp'
+                        label: 'Timestamp',
+                        sortable: true
                     },
                     {
                         key: 'showChangedProperties',
@@ -80,12 +130,55 @@
                 })
                 .then(response => {
                     this.logs = response.data;
+                    this.logsCopy = this.logs;
+                    this.populateSearchOptions();
                     
                     console.log(response.data);
                 })
                 .catch(error => {
                     console.log(error);
                 })
+            },
+
+            populateSearchOptions() {
+                this.entityOptions = [''];
+                this.typeOptions = [''];
+
+                this.logs.forEach((logObj) => {
+                    this.entityOptions.push(logObj.globalId.entity);
+                    this.typeOptions.push(logObj.type)
+                });
+
+                this.entityOptions = this.entityOptions.filter(this.onlyUnique);
+                this.typeOptions = this.typeOptions.filter(this.onlyUnique);
+            },
+
+            onlyUnique(value, index, self) {
+                return self.indexOf(value) === index;
+            },
+
+            onSubmit() {
+                this.logs = this.logsCopy.filter((logObj) => {
+                    let [entityFilter, typeFilter, regexFilter, authorFilter] = [true, true, true, true];
+                    if (this.entity !== '') {
+                        entityFilter = this.entity === logObj.globalId.entity;
+                    }
+                    if (this.type !== '') {
+                        typeFilter = this.type === logObj.type;
+                    }
+                    if (this.fullLogRegex !== '') {
+                        // let regexStr = this.fullLogRegex.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+                        let regex = new RegExp(this.fullLogRegex);
+                        regexFilter = regex.test(JSON.stringify(logObj));
+                    }
+                    if (this.author !== '') {
+                        if (logObj.commitMetadata.author) {
+                            authorFilter = logObj.commitMetadata.author.toLowerCase().includes(this.author.toLowerCase());
+                        }
+                        else authorFilter = false;
+                    }
+                    return entityFilter && typeFilter && regexFilter && authorFilter;
+                });
             },
 
             hideFullLogModal() {
