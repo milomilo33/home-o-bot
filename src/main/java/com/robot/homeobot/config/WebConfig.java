@@ -18,6 +18,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:8081")
                 .allowedMethods("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH")
                 .allowedHeaders("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization")
+//                .allowedOrigins("*")
+//                .allowedHeaders("*");
                 .allowCredentials(true);
     }
 

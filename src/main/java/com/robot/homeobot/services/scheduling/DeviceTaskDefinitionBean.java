@@ -17,6 +17,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -128,6 +129,8 @@ public class DeviceTaskDefinitionBean implements Runnable {
         deviceRepository.save(device);
 
         // check if messages trigger alarms
+        Alarm dangerAlarm = alarmRepository.findByDescriptionAndType("Danger device messages alarm", Alarm.AlarmType.PREDEFINED);
+        int triggeredAlarmsSnapshot = dangerAlarm.getAllTriggered().size();
         KieSession kieSession = kieContainer.newKieSession("alarmRulesSession");
 
 //        device.setRealEstate(null);
@@ -143,6 +146,15 @@ public class DeviceTaskDefinitionBean implements Runnable {
         int fired = kieSession.fireAllRules();
         System.out.println("Number of Rules executed = " + fired);
         kieSession.dispose();
+
+        dangerAlarm = alarmRepository.findByDescriptionAndType("Danger device messages alarm", Alarm.AlarmType.PREDEFINED);
+        int triggeredAlarmsAfterRules = dangerAlarm.getAllTriggered().size();
+        if (triggeredAlarmsSnapshot < triggeredAlarmsAfterRules) {
+            // notify admin
+            for (int i = triggeredAlarmsSnapshot; i < triggeredAlarmsAfterRules; i++) {
+                this.template.convertAndSend("/topic/alarms", "New triggered alarm on device " + dangerAlarm.getAllTriggered().get(i).getDeviceTriggeredOn().getName());
+            }
+        }
 //        Alarm alarm = alarmRepository.findByDescriptionAndType("Danger device messages alarm", Alarm.AlarmType.PREDEFINED);
 
 //        InputStream template = DeviceTaskDefinitionBean.class.getResourceAsStream("/alarmTemplateRules/alarmTemplateRules.drl");
@@ -151,6 +163,8 @@ public class DeviceTaskDefinitionBean implements Runnable {
 //        alarmRepository.save(alarm);
 
         for (Alarm alarm : alarmRepository.findAlarmsByTypeAndDeviceTrigger(Alarm.AlarmType.MESSAGE, device)) {
+            triggeredAlarmsSnapshot = alarm.getAllTriggered().size();
+
             kieSession = kieContainer.newKieSession("alarmTemplateRulesSession");
 
             kieSession.insert(device);
@@ -163,6 +177,14 @@ public class DeviceTaskDefinitionBean implements Runnable {
 //            System.out.println(alarm.getAllTriggered().size());
 //            System.out.println(alarm.getAllTriggered().get(0).getDateTriggered());
             kieSession.dispose();
+
+            triggeredAlarmsAfterRules = alarm.getAllTriggered().size();
+            if (triggeredAlarmsSnapshot < triggeredAlarmsAfterRules) {
+                // notify admin
+                for (int i = triggeredAlarmsSnapshot; i < triggeredAlarmsAfterRules; i++) {
+                    this.template.convertAndSend("/topic/alarms", "New triggered alarm on device " + dangerAlarm.getAllTriggered().get(i).getDeviceTriggeredOn().getName());
+                }
+            }
         }
 
 //        ObjectDataCompiler converter = new ObjectDataCompiler();
@@ -178,6 +200,9 @@ public class DeviceTaskDefinitionBean implements Runnable {
 
         System.out.println("DONE - " + device.getName());
     }
+
+    @Autowired
+    private SimpMessagingTemplate template;
 
     private boolean verifySignature(byte[] data, byte[] signature, PublicKey publicKey) {
         try {
