@@ -37,4 +37,12 @@ Throughout the system the following are also taken into account and/or implement
 - OWASP Top 10 security risks.
 
 # How to run (example use case)
-1. Run 
+1. Run the central [app](https://github.com/milomilo33/home-o-bot/blob/main/src/main/java/com/robot/homeobot/HomeOBotApplication.java) (backend).
+2. Run the frontend application for the central app via ```npm install``` & ```npm run serve``` within the _./src/main/ui/vue_ project directory.
+3. Open [localhost:8080](http://localhost:8080/).
+4. Create a _CSR_ for each device you want to add/use within the system (available device scripts are located in _./devices_, where the name of the script is the name of the device, which should be the common name within a _CSR_). Example: ![image](https://github.com/milomilo33/home-o-bot/assets/29868001/115ce339-6961-4bfc-a2f2-b62ac5532b00)
+5. Log in as an admin (there are example preset accounts for all types of users; all passwords are 123, and usernames are _admin_ for the example admin, _owner1_ for the example owner and _renter1_ for the example renter).
+6. On the _All CSRs_ page, generate the certificates for each _CSR_.
+7. Move (distribute) the generated private keys (e.g. _door-1.key_) to devices from the _./store/private_keys_to_distribute_ project directory to _./devices_.
+8. Run the corresponding _Python_ device scripts in _./devices_ (e.g. _door-1.py_) for the devices to start generating signed messages.
+9. From then on, use the rest of the features of the system by navigating within the central frontend application.
